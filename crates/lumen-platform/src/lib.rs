@@ -2,4 +2,4 @@
 
 mod desktop;
 
-pub use desktop::run;
+pub use desktop::{run, run_with_text, TextContext};
