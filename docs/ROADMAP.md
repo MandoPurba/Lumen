@@ -17,7 +17,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Font loading, shaping, glyph atlas, wrapping.
 - **Exit:** paragraph with mixed Latin/CJK/emoji renders correctly; resizes reflow.
 
-## M3 — Layout + View tree
+## M3 — Layout + View tree ✓
 - `View` trait, arena tree, `VStack/HStack/ZStack`, padding, frame, alignment, spacing.
 - **Exit:** static layout example matches expected bounds (unit tests).
 
