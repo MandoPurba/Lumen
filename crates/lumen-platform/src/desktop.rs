@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::sync::Arc;
 use std::time::Instant;
 
-use lumen_core::Color;
+use lumen_core::{Color, Event, Key};
 use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextGlyph};
 use lumen_text::{TextBuffer, TextSystem};
 use winit::application::ApplicationHandler;
@@ -356,5 +356,162 @@ pub fn run_with_text(
 ) {
     let event_loop = EventLoop::new().expect("event loop creation failed");
     let mut app = DesktopTextApp::new(Box::new(draw_fn));
+    event_loop.run_app(&mut app).expect("event loop error");
+}
+
+// ---------------------------------------------------------------------------
+// ReactiveDesktopApp — event-driven rendering with reactive runtime
+// ---------------------------------------------------------------------------
+
+type ReactiveDrawFn = Box<dyn FnMut(f32, f32, &mut TextContext, &[Event]) -> Vec<DrawCommand>>;
+
+struct ReactiveDesktopApp {
+    draw_fn: ReactiveDrawFn,
+    text_ctx: TextContext,
+    window: Option<Arc<Window>>,
+    gpu: Option<GpuState>,
+    pending_events: Vec<Event>,
+    cursor_pos: [f32; 2],
+}
+
+impl ReactiveDesktopApp {
+    fn new(draw_fn: ReactiveDrawFn) -> Self {
+        Self {
+            draw_fn,
+            text_ctx: TextContext::new(),
+            window: None,
+            gpu: None,
+            pending_events: Vec::new(),
+            cursor_pos: [0.0; 2],
+        }
+    }
+}
+
+impl ApplicationHandler for ReactiveDesktopApp {
+    fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+        if self.window.is_some() {
+            return;
+        }
+        let (window, gpu) = init_gpu(event_loop);
+        self.gpu = Some(gpu);
+        self.window = Some(window.clone());
+        window.request_redraw();
+    }
+
+    fn window_event(&mut self, event_loop: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
+        match event {
+            WindowEvent::CloseRequested => event_loop.exit(),
+
+            WindowEvent::Resized(new_size) => {
+                if let Some(gpu) = &mut self.gpu {
+                    gpu.config.width = new_size.width.max(1);
+                    gpu.config.height = new_size.height.max(1);
+                    gpu.surface.configure(&gpu.device, &gpu.config);
+                }
+                if let Some(w) = &self.window {
+                    w.request_redraw();
+                }
+            }
+
+            WindowEvent::CursorMoved { position, .. } => {
+                if let Some(w) = &self.window {
+                    let s = w.scale_factor() as f32;
+                    self.cursor_pos = [position.x as f32 / s, position.y as f32 / s];
+                    self.pending_events.push(Event::PointerMoved {
+                        x: self.cursor_pos[0],
+                        y: self.cursor_pos[1],
+                    });
+                    w.request_redraw();
+                }
+            }
+
+            WindowEvent::MouseInput {
+                state,
+                button: winit::event::MouseButton::Left,
+                ..
+            } => {
+                let ev = match state {
+                    winit::event::ElementState::Pressed => Event::PointerPressed {
+                        x: self.cursor_pos[0],
+                        y: self.cursor_pos[1],
+                    },
+                    winit::event::ElementState::Released => Event::PointerReleased {
+                        x: self.cursor_pos[0],
+                        y: self.cursor_pos[1],
+                    },
+                };
+                self.pending_events.push(ev);
+                if let Some(w) = &self.window {
+                    w.request_redraw();
+                }
+            }
+
+            WindowEvent::KeyboardInput {
+                event: ref key_event,
+                ..
+            } => {
+                if let Some(key) = translate_key(key_event) {
+                    let ev = match key_event.state {
+                        winit::event::ElementState::Pressed => Event::KeyPressed { key },
+                        winit::event::ElementState::Released => Event::KeyReleased { key },
+                    };
+                    self.pending_events.push(ev);
+                    if let Some(w) = &self.window {
+                        w.request_redraw();
+                    }
+                }
+            }
+
+            WindowEvent::RedrawRequested => {
+                let (logical_w, logical_h) = match (&self.window, &self.gpu) {
+                    (Some(w), Some(g)) => {
+                        let s = w.scale_factor() as f32;
+                        (g.config.width as f32 / s, g.config.height as f32 / s)
+                    }
+                    _ => return,
+                };
+
+                let events: Vec<Event> = std::mem::take(&mut self.pending_events);
+                let commands = (self.draw_fn)(logical_w, logical_h, &mut self.text_ctx, &events);
+
+                // INVARIANT: gpu is Some when window is Some (set together in resumed)
+                let gpu = self.gpu.as_mut().expect("gpu state present during redraw");
+                render_frame(gpu, &commands, [logical_w, logical_h]);
+            }
+
+            _ => {}
+        }
+    }
+}
+
+fn translate_key(event: &winit::event::KeyEvent) -> Option<Key> {
+    use winit::keyboard::Key as WKey;
+    use winit::keyboard::NamedKey;
+
+    match &event.logical_key {
+        WKey::Named(NamedKey::Space) => Some(Key::Space),
+        WKey::Named(NamedKey::Enter) => Some(Key::Enter),
+        WKey::Named(NamedKey::Escape) => Some(Key::Escape),
+        WKey::Named(NamedKey::Tab) => Some(Key::Tab),
+        WKey::Named(NamedKey::Backspace) => Some(Key::Backspace),
+        WKey::Named(NamedKey::ArrowUp) => Some(Key::ArrowUp),
+        WKey::Named(NamedKey::ArrowDown) => Some(Key::ArrowDown),
+        WKey::Named(NamedKey::ArrowLeft) => Some(Key::ArrowLeft),
+        WKey::Named(NamedKey::ArrowRight) => Some(Key::ArrowRight),
+        WKey::Character(s) => s.chars().next().map(Key::Char),
+        _ => None,
+    }
+}
+
+/// Run a reactive desktop app with text and event support.
+///
+/// The draw function receives the viewport size, a [`TextContext`], and
+/// a slice of [`Event`]s that occurred since the last frame. Rendering
+/// is event-driven: the window only redraws when input arrives.
+pub fn run_reactive(
+    draw_fn: impl FnMut(f32, f32, &mut TextContext, &[Event]) -> Vec<DrawCommand> + 'static,
+) {
+    let event_loop = EventLoop::new().expect("event loop creation failed");
+    let mut app = ReactiveDesktopApp::new(Box::new(draw_fn));
     event_loop.run_app(&mut app).expect("event loop error");
 }

@@ -21,7 +21,7 @@ Each milestone has exit criteria. Don't start next until met.
 - `View` trait, arena tree, `VStack/HStack/ZStack`, padding, frame, alignment, spacing.
 - **Exit:** static layout example matches expected bounds (unit tests).
 
-## M4 — Reactivity + Events
+## M4 — Reactivity + Events ✓
 - `Signal/Memo/Effect`, owner scopes, batching.
 - Hit-testing, click/hover/focus, keyboard.
 - **Exit:** counter app works; only dirty nodes repaint (verified via debug overlay/log).

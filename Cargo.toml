@@ -10,6 +10,7 @@ members = [
     "crates/lumen-platform",
     "examples/shapes",
     "examples/text",
+    "examples/counter",
 ]
 
 [workspace.package]
