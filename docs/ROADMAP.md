@@ -13,7 +13,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Draw rects, rounded rects (SDF), borders, solid colors.
 - **Exit:** `examples/shapes` draws 1,000 rounded rects at 60fps+.
 
-## M2 — Text
+## M2 — Text ✓
 - Font loading, shaping, glyph atlas, wrapping.
 - **Exit:** paragraph with mixed Latin/CJK/emoji renders correctly; resizes reflow.
 
