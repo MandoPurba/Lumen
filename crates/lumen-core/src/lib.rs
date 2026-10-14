@@ -1,3 +1,7 @@
-//! Core view trait, view tree, reactive runtime, environment, and events.
+//! Core types for Lumen.
 
 #![no_std]
+
+mod color;
+
+pub use color::Color;

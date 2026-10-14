@@ -5,3 +5,10 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 description = "Platform shells (desktop, web, mobile) for Lumen"
+
+[dependencies]
+lumen-core.workspace = true
+lumen-render.workspace = true
+winit.workspace = true
+wgpu.workspace = true
+pollster.workspace = true

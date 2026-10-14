@@ -2,6 +2,6 @@
 //!
 //! Facade crate that re-exports the public API from internal crates.
 
-pub use lumen_core;
-pub use lumen_platform;
-pub use lumen_render;
+pub use lumen_core::Color;
+pub use lumen_platform::run;
+pub use lumen_render::DrawCommand;
