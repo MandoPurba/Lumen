@@ -2,7 +2,8 @@ use std::collections::HashSet;
 use std::sync::Arc;
 use std::time::Instant;
 
-use lumen_core::{Color, Event, Key};
+use lumen_core::a11y::{A11yRole, A11yTree};
+use lumen_core::{Color, Event, Key, Modifiers};
 use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextGlyph};
 use lumen_text::{TextBuffer, TextSystem};
 use winit::application::ApplicationHandler;
@@ -91,6 +92,18 @@ impl Default for TextContext {
 }
 
 // ---------------------------------------------------------------------------
+// AppFrame — returned from run_app draw function
+// ---------------------------------------------------------------------------
+
+/// A frame produced by the application: draw commands plus accessibility tree.
+pub struct AppFrame {
+    /// Draw commands for the renderer.
+    pub commands: Vec<DrawCommand>,
+    /// Accessibility tree for screen readers.
+    pub a11y: A11yTree,
+}
+
+// ---------------------------------------------------------------------------
 // DesktopApp — plain draw_fn (no text)
 // ---------------------------------------------------------------------------
 
@@ -119,7 +132,7 @@ impl ApplicationHandler for DesktopApp {
         if self.window.is_some() {
             return;
         }
-        let (window, gpu) = init_gpu(event_loop);
+        let (window, gpu) = init_gpu(event_loop, "Lumen");
         self.gpu = Some(gpu);
         self.window = Some(window.clone());
         window.request_redraw();
@@ -197,7 +210,7 @@ impl ApplicationHandler for DesktopTextApp {
         if self.window.is_some() {
             return;
         }
-        let (window, gpu) = init_gpu(event_loop);
+        let (window, gpu) = init_gpu(event_loop, "Lumen");
         self.gpu = Some(gpu);
         self.window = Some(window.clone());
         window.request_redraw();
@@ -246,9 +259,9 @@ impl ApplicationHandler for DesktopTextApp {
 // Shared helpers
 // ---------------------------------------------------------------------------
 
-fn init_gpu(event_loop: &ActiveEventLoop) -> (Arc<Window>, GpuState) {
+fn init_gpu(event_loop: &ActiveEventLoop, title: &str) -> (Arc<Window>, GpuState) {
     let attrs = WindowAttributes::default()
-        .with_title("Lumen")
+        .with_title(title)
         .with_inner_size(winit::dpi::LogicalSize::new(1024.0, 768.0));
 
     let window = Arc::new(
@@ -339,24 +352,35 @@ fn update_fps(window: &Window, frame_count: &mut u32, fps_instant: &mut Instant)
     }
 }
 
-// ---------------------------------------------------------------------------
-// Public API
-// ---------------------------------------------------------------------------
+fn translate_key(event: &winit::event::KeyEvent) -> Option<Key> {
+    use winit::keyboard::Key as WKey;
+    use winit::keyboard::NamedKey;
 
-/// Run a desktop app. `draw_fn` is called each frame with `(width, height)` in logical pixels.
-pub fn run(draw_fn: impl FnMut(f32, f32) -> Vec<DrawCommand> + 'static) {
-    let event_loop = EventLoop::new().expect("event loop creation failed");
-    let mut app = DesktopApp::new(Box::new(draw_fn));
-    event_loop.run_app(&mut app).expect("event loop error");
+    match &event.logical_key {
+        WKey::Named(NamedKey::Space) => Some(Key::Space),
+        WKey::Named(NamedKey::Enter) => Some(Key::Enter),
+        WKey::Named(NamedKey::Escape) => Some(Key::Escape),
+        WKey::Named(NamedKey::Tab) => Some(Key::Tab),
+        WKey::Named(NamedKey::Backspace) => Some(Key::Backspace),
+        WKey::Named(NamedKey::Delete) => Some(Key::Delete),
+        WKey::Named(NamedKey::Home) => Some(Key::Home),
+        WKey::Named(NamedKey::End) => Some(Key::End),
+        WKey::Named(NamedKey::ArrowUp) => Some(Key::ArrowUp),
+        WKey::Named(NamedKey::ArrowDown) => Some(Key::ArrowDown),
+        WKey::Named(NamedKey::ArrowLeft) => Some(Key::ArrowLeft),
+        WKey::Named(NamedKey::ArrowRight) => Some(Key::ArrowRight),
+        WKey::Character(s) => s.chars().next().map(Key::Char),
+        _ => None,
+    }
 }
 
-/// Run a desktop app with text support. `draw_fn` receives a [`TextContext`] for text rendering.
-pub fn run_with_text(
-    draw_fn: impl FnMut(f32, f32, &mut TextContext) -> Vec<DrawCommand> + 'static,
-) {
-    let event_loop = EventLoop::new().expect("event loop creation failed");
-    let mut app = DesktopTextApp::new(Box::new(draw_fn));
-    event_loop.run_app(&mut app).expect("event loop error");
+fn translate_modifiers(state: winit::keyboard::ModifiersState) -> Modifiers {
+    Modifiers {
+        shift: state.shift_key(),
+        ctrl: state.control_key(),
+        alt: state.alt_key(),
+        meta: state.super_key(),
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -372,6 +396,7 @@ struct ReactiveDesktopApp {
     gpu: Option<GpuState>,
     pending_events: Vec<Event>,
     cursor_pos: [f32; 2],
+    modifiers: Modifiers,
 }
 
 impl ReactiveDesktopApp {
@@ -383,6 +408,7 @@ impl ReactiveDesktopApp {
             gpu: None,
             pending_events: Vec::new(),
             cursor_pos: [0.0; 2],
+            modifiers: Modifiers::default(),
         }
     }
 }
@@ -392,13 +418,21 @@ impl ApplicationHandler for ReactiveDesktopApp {
         if self.window.is_some() {
             return;
         }
-        let (window, gpu) = init_gpu(event_loop);
+        let (window, gpu) = init_gpu(event_loop, "Lumen");
         self.gpu = Some(gpu);
         self.window = Some(window.clone());
         window.request_redraw();
     }
 
     fn window_event(&mut self, event_loop: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
+        process_common_events(
+            &event,
+            &mut self.pending_events,
+            &mut self.cursor_pos,
+            &mut self.modifiers,
+            &self.window,
+        );
+
         match event {
             WindowEvent::CloseRequested => event_loop.exit(),
 
@@ -410,55 +444,6 @@ impl ApplicationHandler for ReactiveDesktopApp {
                 }
                 if let Some(w) = &self.window {
                     w.request_redraw();
-                }
-            }
-
-            WindowEvent::CursorMoved { position, .. } => {
-                if let Some(w) = &self.window {
-                    let s = w.scale_factor() as f32;
-                    self.cursor_pos = [position.x as f32 / s, position.y as f32 / s];
-                    self.pending_events.push(Event::PointerMoved {
-                        x: self.cursor_pos[0],
-                        y: self.cursor_pos[1],
-                    });
-                    w.request_redraw();
-                }
-            }
-
-            WindowEvent::MouseInput {
-                state,
-                button: winit::event::MouseButton::Left,
-                ..
-            } => {
-                let ev = match state {
-                    winit::event::ElementState::Pressed => Event::PointerPressed {
-                        x: self.cursor_pos[0],
-                        y: self.cursor_pos[1],
-                    },
-                    winit::event::ElementState::Released => Event::PointerReleased {
-                        x: self.cursor_pos[0],
-                        y: self.cursor_pos[1],
-                    },
-                };
-                self.pending_events.push(ev);
-                if let Some(w) = &self.window {
-                    w.request_redraw();
-                }
-            }
-
-            WindowEvent::KeyboardInput {
-                event: ref key_event,
-                ..
-            } => {
-                if let Some(key) = translate_key(key_event) {
-                    let ev = match key_event.state {
-                        winit::event::ElementState::Pressed => Event::KeyPressed { key },
-                        winit::event::ElementState::Released => Event::KeyReleased { key },
-                    };
-                    self.pending_events.push(ev);
-                    if let Some(w) = &self.window {
-                        w.request_redraw();
-                    }
                 }
             }
 
@@ -484,23 +469,302 @@ impl ApplicationHandler for ReactiveDesktopApp {
     }
 }
 
-fn translate_key(event: &winit::event::KeyEvent) -> Option<Key> {
-    use winit::keyboard::Key as WKey;
-    use winit::keyboard::NamedKey;
+// ---------------------------------------------------------------------------
+// AccessibleDesktopApp — run_app with AccessKit integration
+// ---------------------------------------------------------------------------
 
-    match &event.logical_key {
-        WKey::Named(NamedKey::Space) => Some(Key::Space),
-        WKey::Named(NamedKey::Enter) => Some(Key::Enter),
-        WKey::Named(NamedKey::Escape) => Some(Key::Escape),
-        WKey::Named(NamedKey::Tab) => Some(Key::Tab),
-        WKey::Named(NamedKey::Backspace) => Some(Key::Backspace),
-        WKey::Named(NamedKey::ArrowUp) => Some(Key::ArrowUp),
-        WKey::Named(NamedKey::ArrowDown) => Some(Key::ArrowDown),
-        WKey::Named(NamedKey::ArrowLeft) => Some(Key::ArrowLeft),
-        WKey::Named(NamedKey::ArrowRight) => Some(Key::ArrowRight),
-        WKey::Character(s) => s.chars().next().map(Key::Char),
-        _ => None,
+type AppDrawFn = Box<dyn FnMut(f32, f32, &mut TextContext, &[Event]) -> AppFrame>;
+
+struct LumenActivationHandler;
+
+impl accesskit::ActivationHandler for LumenActivationHandler {
+    fn request_initial_tree(&mut self) -> Option<accesskit::TreeUpdate> {
+        Some(a11y_tree_to_update(&A11yTree::empty("Lumen")))
     }
+}
+
+struct LumenActionHandler;
+
+impl accesskit::ActionHandler for LumenActionHandler {
+    fn do_action(&mut self, _request: accesskit::ActionRequest) {}
+}
+
+struct LumenDeactivationHandler;
+
+impl accesskit::DeactivationHandler for LumenDeactivationHandler {
+    fn deactivate_accessibility(&mut self) {}
+}
+
+struct AccessibleDesktopApp {
+    draw_fn: AppDrawFn,
+    text_ctx: TextContext,
+    window: Option<Arc<Window>>,
+    gpu: Option<GpuState>,
+    pending_events: Vec<Event>,
+    cursor_pos: [f32; 2],
+    modifiers: Modifiers,
+    adapter: Option<accesskit_winit::Adapter>,
+}
+
+impl AccessibleDesktopApp {
+    fn new(draw_fn: AppDrawFn) -> Self {
+        Self {
+            draw_fn,
+            text_ctx: TextContext::new(),
+            window: None,
+            gpu: None,
+            pending_events: Vec::new(),
+            cursor_pos: [0.0; 2],
+            modifiers: Modifiers::default(),
+            adapter: None,
+        }
+    }
+}
+
+impl ApplicationHandler for AccessibleDesktopApp {
+    fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+        if self.window.is_some() {
+            return;
+        }
+        let (window, gpu) = init_gpu(event_loop, "Lumen");
+        self.gpu = Some(gpu);
+
+        let adapter = accesskit_winit::Adapter::with_direct_handlers(
+            &window,
+            LumenActivationHandler,
+            LumenActionHandler,
+            LumenDeactivationHandler,
+        );
+        self.adapter = Some(adapter);
+
+        self.window = Some(window.clone());
+        window.request_redraw();
+    }
+
+    fn window_event(&mut self, event_loop: &ActiveEventLoop, _id: WindowId, event: WindowEvent) {
+        if let (Some(adapter), Some(window)) = (&mut self.adapter, &self.window) {
+            adapter.process_event(window, &event);
+        }
+
+        process_common_events(
+            &event,
+            &mut self.pending_events,
+            &mut self.cursor_pos,
+            &mut self.modifiers,
+            &self.window,
+        );
+
+        match event {
+            WindowEvent::CloseRequested => event_loop.exit(),
+
+            WindowEvent::Resized(new_size) => {
+                if let Some(gpu) = &mut self.gpu {
+                    gpu.config.width = new_size.width.max(1);
+                    gpu.config.height = new_size.height.max(1);
+                    gpu.surface.configure(&gpu.device, &gpu.config);
+                }
+                if let Some(w) = &self.window {
+                    w.request_redraw();
+                }
+            }
+
+            WindowEvent::RedrawRequested => {
+                let (logical_w, logical_h) = match (&self.window, &self.gpu) {
+                    (Some(w), Some(g)) => {
+                        let s = w.scale_factor() as f32;
+                        (g.config.width as f32 / s, g.config.height as f32 / s)
+                    }
+                    _ => return,
+                };
+
+                let events: Vec<Event> = std::mem::take(&mut self.pending_events);
+                let frame = (self.draw_fn)(logical_w, logical_h, &mut self.text_ctx, &events);
+
+                if let Some(adapter) = &mut self.adapter {
+                    adapter.update_if_active(|| a11y_tree_to_update(&frame.a11y));
+                }
+
+                // INVARIANT: gpu is Some when window is Some (set together in resumed)
+                let gpu = self.gpu.as_mut().expect("gpu state present during redraw");
+                render_frame(gpu, &frame.commands, [logical_w, logical_h]);
+            }
+
+            _ => {}
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Common event processing
+// ---------------------------------------------------------------------------
+
+fn process_common_events(
+    event: &WindowEvent,
+    pending: &mut Vec<Event>,
+    cursor_pos: &mut [f32; 2],
+    modifiers: &mut Modifiers,
+    window: &Option<Arc<Window>>,
+) {
+    match event {
+        WindowEvent::CursorMoved { position, .. } => {
+            if let Some(w) = window {
+                let s = w.scale_factor() as f32;
+                cursor_pos[0] = position.x as f32 / s;
+                cursor_pos[1] = position.y as f32 / s;
+                pending.push(Event::PointerMoved {
+                    x: cursor_pos[0],
+                    y: cursor_pos[1],
+                });
+                w.request_redraw();
+            }
+        }
+
+        WindowEvent::MouseInput {
+            state,
+            button: winit::event::MouseButton::Left,
+            ..
+        } => {
+            let ev = match state {
+                winit::event::ElementState::Pressed => Event::PointerPressed {
+                    x: cursor_pos[0],
+                    y: cursor_pos[1],
+                },
+                winit::event::ElementState::Released => Event::PointerReleased {
+                    x: cursor_pos[0],
+                    y: cursor_pos[1],
+                },
+            };
+            pending.push(ev);
+            if let Some(w) = window {
+                w.request_redraw();
+            }
+        }
+
+        WindowEvent::MouseWheel { delta, .. } => {
+            let (dx, dy) = match delta {
+                winit::event::MouseScrollDelta::LineDelta(x, y) => (*x * 20.0, *y * 20.0),
+                winit::event::MouseScrollDelta::PixelDelta(pos) => (pos.x as f32, pos.y as f32),
+            };
+            pending.push(Event::Scroll {
+                x: cursor_pos[0],
+                y: cursor_pos[1],
+                dx,
+                dy,
+            });
+            if let Some(w) = window {
+                w.request_redraw();
+            }
+        }
+
+        WindowEvent::ModifiersChanged(mods) => {
+            *modifiers = translate_modifiers(mods.state());
+        }
+
+        WindowEvent::KeyboardInput {
+            event: ref key_event,
+            ..
+        } => {
+            if let Some(key) = translate_key(key_event) {
+                let ev = match key_event.state {
+                    winit::event::ElementState::Pressed => Event::KeyPressed {
+                        key,
+                        modifiers: *modifiers,
+                    },
+                    winit::event::ElementState::Released => Event::KeyReleased {
+                        key,
+                        modifiers: *modifiers,
+                    },
+                };
+                pending.push(ev);
+                if let Some(w) = window {
+                    w.request_redraw();
+                }
+            }
+        }
+
+        _ => {}
+    }
+}
+
+// ---------------------------------------------------------------------------
+// AccessKit translation
+// ---------------------------------------------------------------------------
+
+fn a11y_tree_to_update(tree: &A11yTree) -> accesskit::TreeUpdate {
+    let nodes: Vec<(accesskit::NodeId, accesskit::Node)> = tree
+        .nodes
+        .iter()
+        .map(|node| {
+            let mut builder = accesskit::NodeBuilder::new(a11y_role(node.role));
+            if let Some(name) = &node.name {
+                builder.set_name(name.as_str());
+            }
+            if let Some(value) = &node.value {
+                builder.set_value(value.as_str());
+            }
+            if let Some(checked) = node.checked {
+                builder.set_toggled(if checked {
+                    accesskit::Toggled::True
+                } else {
+                    accesskit::Toggled::False
+                });
+            }
+            if !node.child_ids.is_empty() {
+                builder.set_children(
+                    node.child_ids
+                        .iter()
+                        .map(|&id| accesskit::NodeId(id))
+                        .collect::<Vec<_>>(),
+                );
+            }
+            if node.focusable {
+                builder.add_action(accesskit::Action::Focus);
+            }
+            (accesskit::NodeId(node.id), builder.build())
+        })
+        .collect();
+
+    accesskit::TreeUpdate {
+        nodes,
+        tree: Some(accesskit::Tree::new(accesskit::NodeId(tree.root))),
+        focus: tree
+            .focus
+            .map(accesskit::NodeId)
+            .unwrap_or(accesskit::NodeId(tree.root)),
+    }
+}
+
+fn a11y_role(role: A11yRole) -> accesskit::Role {
+    match role {
+        A11yRole::Window => accesskit::Role::Window,
+        A11yRole::Group => accesskit::Role::Group,
+        A11yRole::Button => accesskit::Role::Button,
+        A11yRole::CheckBox => accesskit::Role::CheckBox,
+        A11yRole::TextField => accesskit::Role::TextInput,
+        A11yRole::Label => accesskit::Role::Label,
+        A11yRole::List => accesskit::Role::List,
+        A11yRole::ListItem => accesskit::Role::ListItem,
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+/// Run a desktop app. `draw_fn` is called each frame with `(width, height)` in logical pixels.
+pub fn run(draw_fn: impl FnMut(f32, f32) -> Vec<DrawCommand> + 'static) {
+    let event_loop = EventLoop::new().expect("event loop creation failed");
+    let mut app = DesktopApp::new(Box::new(draw_fn));
+    event_loop.run_app(&mut app).expect("event loop error");
+}
+
+/// Run a desktop app with text support. `draw_fn` receives a [`TextContext`] for text rendering.
+pub fn run_with_text(
+    draw_fn: impl FnMut(f32, f32, &mut TextContext) -> Vec<DrawCommand> + 'static,
+) {
+    let event_loop = EventLoop::new().expect("event loop creation failed");
+    let mut app = DesktopTextApp::new(Box::new(draw_fn));
+    event_loop.run_app(&mut app).expect("event loop error");
 }
 
 /// Run a reactive desktop app with text and event support.
@@ -513,5 +777,16 @@ pub fn run_reactive(
 ) {
     let event_loop = EventLoop::new().expect("event loop creation failed");
     let mut app = ReactiveDesktopApp::new(Box::new(draw_fn));
+    event_loop.run_app(&mut app).expect("event loop error");
+}
+
+/// Run an accessible reactive desktop app.
+///
+/// Same as [`run_reactive`] but the draw function returns an [`AppFrame`]
+/// containing both draw commands and an accessibility tree. The platform
+/// translates the [`A11yTree`] into AccessKit updates for screen readers.
+pub fn run_app(draw_fn: impl FnMut(f32, f32, &mut TextContext, &[Event]) -> AppFrame + 'static) {
+    let event_loop = EventLoop::new().expect("event loop creation failed");
+    let mut app = AccessibleDesktopApp::new(Box::new(draw_fn));
     event_loop.run_app(&mut app).expect("event loop error");
 }

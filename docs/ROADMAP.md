@@ -26,7 +26,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Hit-testing, click/hover/focus, keyboard.
 - **Exit:** counter app works; only dirty nodes repaint (verified via debug overlay/log).
 
-## M5 — Core primitives + A11y
+## M5 — Core primitives + A11y ✓
 - `Pressable`, `Scroll`, `TextInput` (cursor, selection, IME), `List` (keyed).
 - AccessKit integration.
 - **Exit:** todo app (in-memory) fully keyboard + screen-reader usable on 1 desktop OS.

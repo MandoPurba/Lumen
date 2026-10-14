@@ -1,7 +1,12 @@
-//! Headless primitive views: stacks, sized boxes, and spacers.
+//! Headless primitive views: stacks, sized boxes, spacers, and interaction helpers.
 
 use lumen_core::{NodeId, NodeLayout, View, ViewTree};
 use lumen_layout::{Alignment, Constraints, HAlign, Point, Size, VAlign};
+
+/// Test whether point `(px, py)` lies inside axis-aligned rect `(x, y, w, h)`.
+pub fn hit_test(px: f32, py: f32, x: f32, y: f32, w: f32, h: f32) -> bool {
+    px >= x && px <= x + w && py >= y && py <= y + h
+}
 
 // ---------------------------------------------------------------------------
 // SizedBox — leaf with fixed intrinsic size

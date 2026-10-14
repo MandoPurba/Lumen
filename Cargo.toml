@@ -11,6 +11,7 @@ members = [
     "examples/shapes",
     "examples/text",
     "examples/counter",
+    "examples/todo",
 ]
 
 [workspace.package]
@@ -32,3 +33,5 @@ wgpu = "24"
 winit = "0.30"
 bytemuck = { version = "1", features = ["derive"] }
 pollster = "0.4"
+accesskit = "0.16"
+accesskit_winit = "0.22"

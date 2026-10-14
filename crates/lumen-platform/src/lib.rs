@@ -2,4 +2,4 @@
 
 mod desktop;
 
-pub use desktop::{run, run_reactive, run_with_text, TextContext};
+pub use desktop::{run, run_app, run_reactive, run_with_text, AppFrame, TextContext};
