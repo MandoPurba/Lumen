@@ -71,10 +71,15 @@ New decisions: append, never rewrite. Superseded → mark and link.
 - **Context:** Deep generic view types blow up compile times.
 - **Decision:** Generics within a component; `AnyView` at `#[component]` boundaries.
 
+## ADR-016: Text shaping via cosmic-text
+- **Context:** M2 (Text) requires font loading, shaping, glyph rasterization, line wrapping, and font fallback for Latin/CJK/emoji. Two candidates: cosmic-text (used by COSMIC desktop, Lapce, iced) and parley (new Linebender crate, successor to piet-text).
+- **Decision:** cosmic-text. It is battle-tested in production desktop apps, has mature CJK/emoji/font-fallback support via built-in fontdb + swash, and a well-documented API. parley is newer and evolving fast but not yet at parity for our needs.
+- **Consequences:** + Working text rendering quickly. + Built-in system font discovery. − Larger transitive dependency surface. Can revisit parley for M9 (web) if wasm story improves.
+
 ---
 
 ## Pending decisions
-- ADR-0xx: cosmic-text vs parley
+- ~~ADR-0xx: cosmic-text vs parley~~ → ADR-016
 - ADR-0xx: SQLite crate (rusqlite vs sqlx vs pure-Rust redb + own query)
 - ADR-0xx: Mobile shell (winit backends vs custom)
 - ADR-0xx: License (MIT OR Apache-2.0 proposed)

@@ -6,8 +6,10 @@ members = [
     "crates/lumen-layout",
     "crates/lumen-primitives",
     "crates/lumen-render",
+    "crates/lumen-text",
     "crates/lumen-platform",
     "examples/shapes",
+    "examples/text",
 ]
 
 [workspace.package]
@@ -21,7 +23,9 @@ lumen-core = { path = "crates/lumen-core" }
 lumen-layout = { path = "crates/lumen-layout" }
 lumen-primitives = { path = "crates/lumen-primitives" }
 lumen-render = { path = "crates/lumen-render" }
+lumen-text = { path = "crates/lumen-text" }
 lumen-platform = { path = "crates/lumen-platform" }
+cosmic-text = "0.12"
 slotmap = "1"
 wgpu = "24"
 winit = "0.30"
