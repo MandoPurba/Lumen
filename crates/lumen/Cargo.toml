@@ -8,5 +8,7 @@ description = "Declarative cross-platform UI framework in pure Rust"
 
 [dependencies]
 lumen-core.workspace = true
+lumen-layout.workspace = true
+lumen-primitives.workspace = true
 lumen-render.workspace = true
 lumen-platform.workspace = true

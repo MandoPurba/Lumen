@@ -5,3 +5,7 @@ edition.workspace = true
 license.workspace = true
 rust-version.workspace = true
 description = "View trait, view tree, reactive runtime, environment, and events for Lumen"
+
+[dependencies]
+lumen-layout.workspace = true
+slotmap.workspace = true
