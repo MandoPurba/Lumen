@@ -3,6 +3,8 @@ resolver = "2"
 members = [
     "crates/lumen",
     "crates/lumen-core",
+    "crates/lumen-layout",
+    "crates/lumen-primitives",
     "crates/lumen-render",
     "crates/lumen-platform",
     "examples/shapes",
@@ -16,8 +18,11 @@ rust-version = "1.97"
 
 [workspace.dependencies]
 lumen-core = { path = "crates/lumen-core" }
+lumen-layout = { path = "crates/lumen-layout" }
+lumen-primitives = { path = "crates/lumen-primitives" }
 lumen-render = { path = "crates/lumen-render" }
 lumen-platform = { path = "crates/lumen-platform" }
+slotmap = "1"
 wgpu = "24"
 winit = "0.30"
 bytemuck = { version = "1", features = ["derive"] }
