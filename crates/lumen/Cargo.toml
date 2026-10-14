@@ -1,0 +1,12 @@
+[package]
+name = "lumen"
+version = "0.0.1"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Declarative cross-platform UI framework in pure Rust"
+
+[dependencies]
+lumen-core.workspace = true
+lumen-render.workspace = true
+lumen-platform.workspace = true

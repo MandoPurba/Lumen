@@ -1,0 +1,7 @@
+[package]
+name = "lumen-render"
+version = "0.0.1"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Display list to wgpu renderer for Lumen"
