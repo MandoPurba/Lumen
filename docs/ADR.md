@@ -76,6 +76,11 @@ New decisions: append, never rewrite. Superseded → mark and link.
 - **Decision:** cosmic-text. It is battle-tested in production desktop apps, has mature CJK/emoji/font-fallback support via built-in fontdb + swash, and a well-documented API. parley is newer and evolving fast but not yet at parity for our needs.
 - **Consequences:** + Working text rendering quickly. + Built-in system font discovery. − Larger transitive dependency surface. Can revisit parley for M9 (web) if wasm story improves.
 
+## ADR-017: Web platform via conditional compilation + Canvas 2D text
+- **Context:** M9 requires wasm32 support. Key blockers: (1) wgpu/winit GPU init is async on web, (2) AccessKit has no web backend, (3) cosmic-text on wasm has no system fonts, (4) rusqlite doesn't compile on wasm.
+- **Decision:** `#[cfg(target_arch = "wasm32")]` selects web modules in `lumen-platform` and `lumen-data`. Web text rasterization uses an offscreen Canvas 2D element (browser provides fonts). Data layer uses in-memory HashMap backend on web. GPU init via `wasm_bindgen_futures::spawn_local`. AccessKit skipped on web (a11y via hidden DOM later).
+- **Consequences:** + Same app code compiles for desktop and web without changes. + No font bundling needed. − Canvas 2D text is per-string (not per-glyph), uses more atlas space. − Web data is in-memory only (no persistence across reloads yet; IndexedDB/OPFS can be added).
+
 ---
 
 ## Pending decisions

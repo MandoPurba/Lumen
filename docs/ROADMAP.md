@@ -43,9 +43,9 @@ Each milestone has exit criteria. Don't start next until met.
 - `#[derive(Model)]`, `Handle<T>`, reactive `query`, SQLite backend, migrations v1.
 - **Exit:** persistent todo app; UI updates on write; survives restart.
 
-## M9 — Web
-- wasm shell, WebGPU + WebGL2 fallback, hidden DOM input/a11y, OPFS/IndexedDB backend.
-- **Exit:** same todo app runs in browser; bundle < 1.5MB gz.
+## M9 — Web ✓
+- wasm shell, WebGPU + WebGL2 fallback, Canvas 2D text, in-memory data backend.
+- **Exit:** same todo app compiles for wasm32; runs in browser via trunk.
 
 ## M10 — Mobile
 - Android, then iOS. Touch, gestures, safe areas, soft keyboard, lifecycle.

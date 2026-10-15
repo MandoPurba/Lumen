@@ -4,13 +4,15 @@ use std::time::Instant;
 
 use lumen_core::a11y::{A11yRole, A11yTree};
 use lumen_core::animation;
-use lumen_core::{Color, Event, Key, Modifiers};
+use lumen_core::{Color, Event, Modifiers};
 use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextDraw, TextGlyph};
 use lumen_text::{TextBuffer, TextSystem};
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, EventLoop};
 use winit::window::{Window, WindowAttributes, WindowId};
+
+use crate::common::process_common_events;
 
 struct GpuState {
     surface: wgpu::Surface<'static>,
@@ -19,10 +21,6 @@ struct GpuState {
     config: wgpu::SurfaceConfiguration,
     renderer: Renderer,
 }
-
-// ---------------------------------------------------------------------------
-// TextContext — bridges lumen-text and lumen-render
-// ---------------------------------------------------------------------------
 
 /// Bridges text shaping (lumen-text) and GPU rendering (lumen-render).
 pub struct TextContext {
@@ -106,10 +104,6 @@ impl TextDraw for TextContext {
     }
 }
 
-// ---------------------------------------------------------------------------
-// AppFrame — returned from run_app draw function
-// ---------------------------------------------------------------------------
-
 /// A frame produced by the application: draw commands plus accessibility tree.
 pub struct AppFrame {
     /// Draw commands for the renderer.
@@ -179,6 +173,7 @@ impl ApplicationHandler for DesktopApp {
 
                 let commands = (self.draw_fn)(logical_w, logical_h);
 
+                // INVARIANT: gpu is Some when window is Some (set together in resumed)
                 let gpu = self.gpu.as_mut().expect("gpu state present");
                 let window = self.window.as_ref().expect("window present");
 
@@ -257,6 +252,7 @@ impl ApplicationHandler for DesktopTextApp {
 
                 let commands = (self.draw_fn)(logical_w, logical_h, &mut self.text_ctx);
 
+                // INVARIANT: gpu is Some when window is Some (set together in resumed)
                 let gpu = self.gpu.as_mut().expect("gpu state present");
                 let window = self.window.as_ref().expect("window present");
 
@@ -267,134 +263,6 @@ impl ApplicationHandler for DesktopTextApp {
 
             _ => {}
         }
-    }
-}
-
-// ---------------------------------------------------------------------------
-// Shared helpers
-// ---------------------------------------------------------------------------
-
-fn init_gpu(event_loop: &ActiveEventLoop, title: &str) -> (Arc<Window>, GpuState) {
-    let attrs = WindowAttributes::default()
-        .with_title(title)
-        .with_inner_size(winit::dpi::LogicalSize::new(1024.0, 768.0));
-
-    let window = Arc::new(
-        event_loop
-            .create_window(attrs)
-            .expect("window creation failed"),
-    );
-
-    let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor::default());
-
-    let surface = instance
-        .create_surface(window.clone())
-        .expect("surface creation failed");
-
-    let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
-        compatible_surface: Some(&surface),
-        ..Default::default()
-    }))
-    .expect("no compatible GPU adapter");
-
-    let (device, queue) =
-        pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor::default(), None))
-            .expect("GPU device creation failed");
-
-    let caps = surface.get_capabilities(&adapter);
-    let format = caps
-        .formats
-        .iter()
-        .find(|f| f.is_srgb())
-        .copied()
-        .unwrap_or(caps.formats[0]);
-
-    let size = window.inner_size();
-    let config = wgpu::SurfaceConfiguration {
-        usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-        format,
-        width: size.width.max(1),
-        height: size.height.max(1),
-        present_mode: wgpu::PresentMode::AutoVsync,
-        alpha_mode: caps.alpha_modes[0],
-        view_formats: vec![],
-        desired_maximum_frame_latency: 2,
-    };
-    surface.configure(&device, &config);
-
-    let renderer = Renderer::new(&device, format);
-
-    let gpu = GpuState {
-        surface,
-        device,
-        queue,
-        config,
-        renderer,
-    };
-
-    (window, gpu)
-}
-
-fn render_frame(gpu: &mut GpuState, commands: &[DrawCommand], viewport: [f32; 2]) {
-    let frame = match gpu.surface.get_current_texture() {
-        Ok(f) => f,
-        Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
-            gpu.surface.configure(&gpu.device, &gpu.config);
-            return;
-        }
-        Err(e) => {
-            eprintln!("surface error: {e}");
-            return;
-        }
-    };
-
-    let view = frame
-        .texture
-        .create_view(&wgpu::TextureViewDescriptor::default());
-    gpu.renderer
-        .render(&gpu.device, &gpu.queue, &view, viewport, commands);
-    frame.present();
-}
-
-fn update_fps(window: &Window, frame_count: &mut u32, fps_instant: &mut Instant) {
-    *frame_count += 1;
-    let elapsed = fps_instant.elapsed();
-    if elapsed.as_secs_f64() >= 1.0 {
-        let fps = *frame_count as f64 / elapsed.as_secs_f64();
-        window.set_title(&format!("Lumen — {fps:.0} FPS"));
-        *frame_count = 0;
-        *fps_instant = Instant::now();
-    }
-}
-
-fn translate_key(event: &winit::event::KeyEvent) -> Option<Key> {
-    use winit::keyboard::Key as WKey;
-    use winit::keyboard::NamedKey;
-
-    match &event.logical_key {
-        WKey::Named(NamedKey::Space) => Some(Key::Space),
-        WKey::Named(NamedKey::Enter) => Some(Key::Enter),
-        WKey::Named(NamedKey::Escape) => Some(Key::Escape),
-        WKey::Named(NamedKey::Tab) => Some(Key::Tab),
-        WKey::Named(NamedKey::Backspace) => Some(Key::Backspace),
-        WKey::Named(NamedKey::Delete) => Some(Key::Delete),
-        WKey::Named(NamedKey::Home) => Some(Key::Home),
-        WKey::Named(NamedKey::End) => Some(Key::End),
-        WKey::Named(NamedKey::ArrowUp) => Some(Key::ArrowUp),
-        WKey::Named(NamedKey::ArrowDown) => Some(Key::ArrowDown),
-        WKey::Named(NamedKey::ArrowLeft) => Some(Key::ArrowLeft),
-        WKey::Named(NamedKey::ArrowRight) => Some(Key::ArrowRight),
-        WKey::Character(s) => s.chars().next().map(Key::Char),
-        _ => None,
-    }
-}
-
-fn translate_modifiers(state: winit::keyboard::ModifiersState) -> Modifiers {
-    Modifiers {
-        shift: state.shift_key(),
-        ctrl: state.control_key(),
-        alt: state.alt_key(),
-        meta: state.super_key(),
     }
 }
 
@@ -632,94 +500,99 @@ impl ApplicationHandler for AccessibleDesktopApp {
 }
 
 // ---------------------------------------------------------------------------
-// Common event processing
+// Shared helpers
 // ---------------------------------------------------------------------------
 
-fn process_common_events(
-    event: &WindowEvent,
-    pending: &mut Vec<Event>,
-    cursor_pos: &mut [f32; 2],
-    modifiers: &mut Modifiers,
-    window: &Option<Arc<Window>>,
-) {
-    match event {
-        WindowEvent::CursorMoved { position, .. } => {
-            if let Some(w) = window {
-                let s = w.scale_factor() as f32;
-                cursor_pos[0] = position.x as f32 / s;
-                cursor_pos[1] = position.y as f32 / s;
-                pending.push(Event::PointerMoved {
-                    x: cursor_pos[0],
-                    y: cursor_pos[1],
-                });
-                w.request_redraw();
-            }
-        }
+fn init_gpu(event_loop: &ActiveEventLoop, title: &str) -> (Arc<Window>, GpuState) {
+    let attrs = WindowAttributes::default()
+        .with_title(title)
+        .with_inner_size(winit::dpi::LogicalSize::new(1024.0, 768.0));
 
-        WindowEvent::MouseInput {
-            state,
-            button: winit::event::MouseButton::Left,
-            ..
-        } => {
-            let ev = match state {
-                winit::event::ElementState::Pressed => Event::PointerPressed {
-                    x: cursor_pos[0],
-                    y: cursor_pos[1],
-                },
-                winit::event::ElementState::Released => Event::PointerReleased {
-                    x: cursor_pos[0],
-                    y: cursor_pos[1],
-                },
-            };
-            pending.push(ev);
-            if let Some(w) = window {
-                w.request_redraw();
-            }
-        }
+    let window = Arc::new(
+        event_loop
+            .create_window(attrs)
+            .expect("window creation failed"),
+    );
 
-        WindowEvent::MouseWheel { delta, .. } => {
-            let (dx, dy) = match delta {
-                winit::event::MouseScrollDelta::LineDelta(x, y) => (*x * 20.0, *y * 20.0),
-                winit::event::MouseScrollDelta::PixelDelta(pos) => (pos.x as f32, pos.y as f32),
-            };
-            pending.push(Event::Scroll {
-                x: cursor_pos[0],
-                y: cursor_pos[1],
-                dx,
-                dy,
-            });
-            if let Some(w) = window {
-                w.request_redraw();
-            }
-        }
+    let instance = wgpu::Instance::new(&wgpu::InstanceDescriptor::default());
 
-        WindowEvent::ModifiersChanged(mods) => {
-            *modifiers = translate_modifiers(mods.state());
-        }
+    let surface = instance
+        .create_surface(window.clone())
+        .expect("surface creation failed");
 
-        WindowEvent::KeyboardInput {
-            event: ref key_event,
-            ..
-        } => {
-            if let Some(key) = translate_key(key_event) {
-                let ev = match key_event.state {
-                    winit::event::ElementState::Pressed => Event::KeyPressed {
-                        key,
-                        modifiers: *modifiers,
-                    },
-                    winit::event::ElementState::Released => Event::KeyReleased {
-                        key,
-                        modifiers: *modifiers,
-                    },
-                };
-                pending.push(ev);
-                if let Some(w) = window {
-                    w.request_redraw();
-                }
-            }
-        }
+    let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
+        compatible_surface: Some(&surface),
+        ..Default::default()
+    }))
+    .expect("no compatible GPU adapter");
 
-        _ => {}
+    let (device, queue) =
+        pollster::block_on(adapter.request_device(&wgpu::DeviceDescriptor::default(), None))
+            .expect("GPU device creation failed");
+
+    let caps = surface.get_capabilities(&adapter);
+    let format = caps
+        .formats
+        .iter()
+        .find(|f| f.is_srgb())
+        .copied()
+        .unwrap_or(caps.formats[0]);
+
+    let size = window.inner_size();
+    let config = wgpu::SurfaceConfiguration {
+        usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+        format,
+        width: size.width.max(1),
+        height: size.height.max(1),
+        present_mode: wgpu::PresentMode::AutoVsync,
+        alpha_mode: caps.alpha_modes[0],
+        view_formats: vec![],
+        desired_maximum_frame_latency: 2,
+    };
+    surface.configure(&device, &config);
+
+    let renderer = Renderer::new(&device, format);
+
+    let gpu = GpuState {
+        surface,
+        device,
+        queue,
+        config,
+        renderer,
+    };
+
+    (window, gpu)
+}
+
+fn render_frame(gpu: &mut GpuState, commands: &[DrawCommand], viewport: [f32; 2]) {
+    let frame = match gpu.surface.get_current_texture() {
+        Ok(f) => f,
+        Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
+            gpu.surface.configure(&gpu.device, &gpu.config);
+            return;
+        }
+        Err(e) => {
+            eprintln!("surface error: {e}");
+            return;
+        }
+    };
+
+    let view = frame
+        .texture
+        .create_view(&wgpu::TextureViewDescriptor::default());
+    gpu.renderer
+        .render(&gpu.device, &gpu.queue, &view, viewport, commands);
+    frame.present();
+}
+
+fn update_fps(window: &Window, frame_count: &mut u32, fps_instant: &mut Instant) {
+    *frame_count += 1;
+    let elapsed = fps_instant.elapsed();
+    if elapsed.as_secs_f64() >= 1.0 {
+        let fps = *frame_count as f64 / elapsed.as_secs_f64();
+        window.set_title(&format!("Lumen — {fps:.0} FPS"));
+        *frame_count = 0;
+        *fps_instant = Instant::now();
     }
 }
 
@@ -805,10 +678,6 @@ pub fn run_with_text(
 }
 
 /// Run a reactive desktop app with text and event support.
-///
-/// The draw function receives the viewport size, a [`TextContext`], and
-/// a slice of [`Event`]s that occurred since the last frame. Rendering
-/// is event-driven: the window only redraws when input arrives.
 pub fn run_reactive(
     draw_fn: impl FnMut(f32, f32, &mut TextContext, &[Event]) -> Vec<DrawCommand> + 'static,
 ) {
@@ -818,10 +687,6 @@ pub fn run_reactive(
 }
 
 /// Run an accessible reactive desktop app.
-///
-/// Same as [`run_reactive`] but the draw function returns an [`AppFrame`]
-/// containing both draw commands and an accessibility tree. The platform
-/// translates the [`A11yTree`] into AccessKit updates for screen readers.
 pub fn run_app(draw_fn: impl FnMut(f32, f32, &mut TextContext, &[Event]) -> AppFrame + 'static) {
     let event_loop = EventLoop::new().expect("event loop creation failed");
     let mut app = AccessibleDesktopApp::new(Box::new(draw_fn));

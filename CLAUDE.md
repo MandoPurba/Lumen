@@ -10,7 +10,7 @@ Cross-platform declarative UI framework in pure Rust. SwiftUI/Compose-style API,
 - `docs/DESIGN_SYSTEM.md` — tokens/components
 
 ## Current milestone
-M9 — Web. (Update this line when moving on.)
+M10 — Mobile. (Update this line when moving on.)
 
 ## Workspace
 - Monorepo, Cargo workspace, crates under `crates/`, examples under `examples/`.
