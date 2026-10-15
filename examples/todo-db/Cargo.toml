@@ -1,0 +1,11 @@
+[package]
+name = "todo-db"
+version = "0.0.1"
+edition.workspace = true
+publish = false
+
+[dependencies]
+lumen = { path = "../../crates/lumen" }
+lumen-data = { path = "../../crates/lumen-data" }
+lumen-theme = { path = "../../crates/lumen-theme" }
+lumen-widgets = { path = "../../crates/lumen-widgets" }

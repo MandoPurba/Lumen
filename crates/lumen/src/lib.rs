@@ -10,6 +10,7 @@ pub use lumen_core::text_input;
 pub use lumen_core::{
     Color, Event, Framed, Key, LayoutRect, Modifiers, NodeId, Padded, View, ViewExt, ViewTree,
 };
+pub use lumen_data as data;
 pub use lumen_layout::{Alignment, Constraints, EdgeInsets, HAlign, Point, Size, VAlign};
 pub use lumen_platform::{run, run_app, run_reactive, run_with_text, AppFrame, TextContext};
 pub use lumen_primitives::{hit_test, HStack, SizedBox, VStack, ZStack};
