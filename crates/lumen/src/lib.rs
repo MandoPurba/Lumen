@@ -19,3 +19,6 @@ pub use lumen_render::{DrawCommand, TextDraw};
 pub use lumen_text::TextBuffer;
 pub use lumen_theme::{self as theme, ColorScheme, Theme};
 pub use lumen_widgets as widgets;
+
+#[cfg(target_os = "android")]
+pub use lumen_platform::{set_android_app, AndroidApp};

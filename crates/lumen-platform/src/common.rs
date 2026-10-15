@@ -119,6 +119,30 @@ pub(crate) fn process_common_events(
             }
         }
 
+        WindowEvent::Touch(touch) => {
+            if let Some(w) = window {
+                let s = w.scale_factor() as f32;
+                let x = touch.location.x as f32 / s;
+                let y = touch.location.y as f32 / s;
+                match touch.phase {
+                    winit::event::TouchPhase::Started => {
+                        cursor_pos[0] = x;
+                        cursor_pos[1] = y;
+                        pending.push(Event::PointerPressed { x, y });
+                    }
+                    winit::event::TouchPhase::Moved => {
+                        cursor_pos[0] = x;
+                        cursor_pos[1] = y;
+                        pending.push(Event::PointerMoved { x, y });
+                    }
+                    winit::event::TouchPhase::Ended | winit::event::TouchPhase::Cancelled => {
+                        pending.push(Event::PointerReleased { x, y });
+                    }
+                }
+                w.request_redraw();
+            }
+        }
+
         _ => {}
     }
 }

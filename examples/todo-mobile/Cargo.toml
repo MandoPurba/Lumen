@@ -1,0 +1,19 @@
+[package]
+name = "todo-mobile"
+version = "0.0.1"
+edition.workspace = true
+publish = false
+
+[lib]
+name = "todo_mobile"
+crate-type = ["lib", "cdylib"]
+
+[[bin]]
+name = "todo-mobile"
+path = "src/main.rs"
+
+[dependencies]
+lumen = { path = "../../crates/lumen", features = ["android"] }
+lumen-data = { path = "../../crates/lumen-data" }
+lumen-theme = { path = "../../crates/lumen-theme" }
+lumen-widgets = { path = "../../crates/lumen-widgets" }

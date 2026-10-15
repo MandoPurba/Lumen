@@ -47,7 +47,7 @@ Each milestone has exit criteria. Don't start next until met.
 - wasm shell, WebGPU + WebGL2 fallback, Canvas 2D text, in-memory data backend.
 - **Exit:** same todo app compiles for wasm32; runs in browser via trunk.
 
-## M10 — Mobile
+## M10 — Mobile ✓
 - Android, then iOS. Touch, gestures, safe areas, soft keyboard, lifecycle.
 - **Exit:** todo app on device, both OSes.
 

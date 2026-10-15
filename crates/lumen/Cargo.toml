@@ -6,6 +6,10 @@ license.workspace = true
 rust-version.workspace = true
 description = "Declarative cross-platform UI framework in pure Rust"
 
+[features]
+default = []
+android = ["lumen-platform/android"]
+
 [dependencies]
 lumen-core.workspace = true
 lumen-layout.workspace = true
