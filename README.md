@@ -1,6 +1,6 @@
-# Sihora
+# Sihora (ᯙᯫᯃᯬᯓ)
 
-Declarative, cross-platform UI framework in pure Rust. *Sihora — from Simalungun Batak calendar, the day of calm.*
+Declarative, cross-platform UI framework in pure Rust. *Sihora (ᯙᯫᯃᯬᯓ) — from Simalungun Batak calendar, the day of calm.*
 
 SwiftUI/Compose-style API. Own GPU renderer (wgpu). Own design system. Built-in reactive data layer. No HTML/CSS.
 
