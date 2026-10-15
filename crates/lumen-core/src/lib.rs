@@ -1,6 +1,7 @@
 //! Core types for Lumen.
 
 pub mod a11y;
+pub mod animation;
 mod color;
 mod event;
 pub mod focus;
