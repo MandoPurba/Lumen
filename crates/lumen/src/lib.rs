@@ -3,6 +3,7 @@
 //! Facade crate that re-exports the public API from internal crates.
 
 pub use lumen_core::a11y;
+pub use lumen_core::animation;
 pub use lumen_core::focus;
 pub use lumen_core::reactive;
 pub use lumen_core::text_input;

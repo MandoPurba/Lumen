@@ -31,7 +31,7 @@ Each milestone has exit criteria. Don't start next until met.
 - AccessKit integration.
 - **Exit:** todo app (in-memory) fully keyboard + screen-reader usable on 1 desktop OS.
 
-## M6 — Animation
+## M6 — Animation ✓
 - Animated modifiers, springs, transitions, reduce-motion.
 - **Exit:** list insert/remove animations, interruptible.
 

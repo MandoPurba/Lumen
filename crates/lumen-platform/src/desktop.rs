@@ -3,6 +3,7 @@ use std::sync::Arc;
 use std::time::Instant;
 
 use lumen_core::a11y::{A11yRole, A11yTree};
+use lumen_core::animation;
 use lumen_core::{Color, Event, Key, Modifiers};
 use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextGlyph};
 use lumen_text::{TextBuffer, TextSystem};
@@ -397,6 +398,7 @@ struct ReactiveDesktopApp {
     pending_events: Vec<Event>,
     cursor_pos: [f32; 2],
     modifiers: Modifiers,
+    last_frame: Option<Instant>,
 }
 
 impl ReactiveDesktopApp {
@@ -409,6 +411,7 @@ impl ReactiveDesktopApp {
             pending_events: Vec::new(),
             cursor_pos: [0.0; 2],
             modifiers: Modifiers::default(),
+            last_frame: None,
         }
     }
 }
@@ -456,12 +459,21 @@ impl ApplicationHandler for ReactiveDesktopApp {
                     _ => return,
                 };
 
+                let dt = self.last_frame.map_or(0.0, |t| t.elapsed().as_secs_f32());
+                self.last_frame = Some(Instant::now());
+
                 let events: Vec<Event> = std::mem::take(&mut self.pending_events);
                 let commands = (self.draw_fn)(logical_w, logical_h, &mut self.text_ctx, &events);
 
                 // INVARIANT: gpu is Some when window is Some (set together in resumed)
                 let gpu = self.gpu.as_mut().expect("gpu state present during redraw");
                 render_frame(gpu, &commands, [logical_w, logical_h]);
+
+                if animation::tick(dt) {
+                    if let Some(w) = &self.window {
+                        w.request_redraw();
+                    }
+                }
             }
 
             _ => {}
@@ -504,6 +516,7 @@ struct AccessibleDesktopApp {
     cursor_pos: [f32; 2],
     modifiers: Modifiers,
     adapter: Option<accesskit_winit::Adapter>,
+    last_frame: Option<Instant>,
 }
 
 impl AccessibleDesktopApp {
@@ -517,6 +530,7 @@ impl AccessibleDesktopApp {
             cursor_pos: [0.0; 2],
             modifiers: Modifiers::default(),
             adapter: None,
+            last_frame: None,
         }
     }
 }
@@ -577,6 +591,9 @@ impl ApplicationHandler for AccessibleDesktopApp {
                     _ => return,
                 };
 
+                let dt = self.last_frame.map_or(0.0, |t| t.elapsed().as_secs_f32());
+                self.last_frame = Some(Instant::now());
+
                 let events: Vec<Event> = std::mem::take(&mut self.pending_events);
                 let frame = (self.draw_fn)(logical_w, logical_h, &mut self.text_ctx, &events);
 
@@ -587,6 +604,12 @@ impl ApplicationHandler for AccessibleDesktopApp {
                 // INVARIANT: gpu is Some when window is Some (set together in resumed)
                 let gpu = self.gpu.as_mut().expect("gpu state present during redraw");
                 render_frame(gpu, &frame.commands, [logical_w, logical_h]);
+
+                if animation::tick(dt) {
+                    if let Some(w) = &self.window {
+                        w.request_redraw();
+                    }
+                }
             }
 
             _ => {}

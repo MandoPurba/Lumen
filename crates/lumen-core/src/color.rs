@@ -23,4 +23,19 @@ impl Color {
     pub const fn to_array(self) -> [f32; 4] {
         [self.r, self.g, self.b, self.a]
     }
+
+    /// Return a copy with the alpha channel multiplied by `opacity`.
+    ///
+    /// # Example
+    /// ```
+    /// use lumen_core::Color;
+    /// let c = Color::WHITE.with_alpha(0.5);
+    /// assert!((c.a - 0.5).abs() < f32::EPSILON);
+    /// ```
+    pub fn with_alpha(self, opacity: f32) -> Self {
+        Self {
+            a: self.a * opacity,
+            ..self
+        }
+    }
 }
