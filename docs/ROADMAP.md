@@ -35,7 +35,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Animated modifiers, springs, transitions, reduce-motion.
 - **Exit:** list insert/remove animations, interruptible.
 
-## M7 — Design system v0.1
+## M7 — Design system v0.1 ✓
 - Tokens, light/dark, 10 components, gallery app, contrast tests.
 - **Exit:** gallery shows all components/states; AA contrast tests pass.
 
