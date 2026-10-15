@@ -5,6 +5,6 @@ edition.workspace = true
 publish = false
 
 [dependencies]
-lumen = { path = "../../crates/lumen" }
-lumen-theme = { path = "../../crates/lumen-theme" }
-lumen-widgets = { path = "../../crates/lumen-widgets" }
+kireiui = { path = "../../crates/kireiui" }
+kireiui-theme = { path = "../../crates/kireiui-theme" }
+kireiui-widgets = { path = "../../crates/kireiui-widgets" }

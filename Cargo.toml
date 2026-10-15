@@ -1,17 +1,17 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/lumen",
-    "crates/lumen-core",
-    "crates/lumen-layout",
-    "crates/lumen-primitives",
-    "crates/lumen-render",
-    "crates/lumen-text",
-    "crates/lumen-theme",
-    "crates/lumen-widgets",
-    "crates/lumen-data",
-    "crates/lumen-data-derive",
-    "crates/lumen-platform",
+    "crates/kireiui",
+    "crates/kireiui-core",
+    "crates/kireiui-layout",
+    "crates/kireiui-primitives",
+    "crates/kireiui-render",
+    "crates/kireiui-text",
+    "crates/kireiui-theme",
+    "crates/kireiui-widgets",
+    "crates/kireidata",
+    "crates/kireidata-derive",
+    "crates/kireiui-platform",
     "examples/shapes",
     "examples/text",
     "examples/counter",
@@ -24,20 +24,20 @@ members = [
 [workspace.package]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/MandoPurba/Lumen"
+repository = "https://github.com/MandoPurba/Kirei"
 rust-version = "1.97"
 
 [workspace.dependencies]
-lumen-core = { path = "crates/lumen-core", version = "0.1.0" }
-lumen-layout = { path = "crates/lumen-layout", version = "0.1.0" }
-lumen-primitives = { path = "crates/lumen-primitives", version = "0.1.0" }
-lumen-render = { path = "crates/lumen-render", version = "0.1.0" }
-lumen-text = { path = "crates/lumen-text", version = "0.1.0" }
-lumen-data = { path = "crates/lumen-data", version = "0.1.0" }
-lumen-data-derive = { path = "crates/lumen-data-derive", version = "0.1.0" }
-lumen-theme = { path = "crates/lumen-theme", version = "0.1.0" }
-lumen-widgets = { path = "crates/lumen-widgets", version = "0.1.0" }
-lumen-platform = { path = "crates/lumen-platform", version = "0.1.0" }
+kireiui-core = { path = "crates/kireiui-core", version = "0.1.0" }
+kireiui-layout = { path = "crates/kireiui-layout", version = "0.1.0" }
+kireiui-primitives = { path = "crates/kireiui-primitives", version = "0.1.0" }
+kireiui-render = { path = "crates/kireiui-render", version = "0.1.0" }
+kireiui-text = { path = "crates/kireiui-text", version = "0.1.0" }
+kireidata = { path = "crates/kireidata", version = "0.1.0" }
+kireidata-derive = { path = "crates/kireidata-derive", version = "0.1.0" }
+kireiui-theme = { path = "crates/kireiui-theme", version = "0.1.0" }
+kireiui-widgets = { path = "crates/kireiui-widgets", version = "0.1.0" }
+kireiui-platform = { path = "crates/kireiui-platform", version = "0.1.0" }
 cosmic-text = "0.12"
 slotmap = "1"
 wgpu = "24"

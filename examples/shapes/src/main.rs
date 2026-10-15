@@ -1,7 +1,7 @@
-use lumen::{Color, DrawCommand};
+use kireiui::{Color, DrawCommand};
 
 fn main() {
-    lumen::run(|width, height| {
+    kireiui::run(|width, height| {
         let mut cmds = Vec::with_capacity(1000);
         for i in 0..1000 {
             let f = i as f32;

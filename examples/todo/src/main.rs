@@ -1,9 +1,9 @@
-use lumen::a11y::{A11yNode, A11yRole, A11yTree};
-use lumen::animation::{self, AnimatedSignal, Spring};
-use lumen::focus::FocusManager;
-use lumen::reactive::{create_signal, get, update};
-use lumen::text_input::TextEditState;
-use lumen::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key};
+use kireiui::a11y::{A11yNode, A11yRole, A11yTree};
+use kireiui::animation::{self, AnimatedSignal, Spring};
+use kireiui::focus::FocusManager;
+use kireiui::reactive::{create_signal, get, update};
+use kireiui::text_input::TextEditState;
+use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key};
 
 #[derive(Clone)]
 struct TodoItem {
@@ -411,9 +411,9 @@ fn main() {
 
 fn add_todo(
     input: &TextEditState,
-    todos: lumen::reactive::Signal<Vec<TodoItem>>,
-    states: lumen::reactive::Signal<Vec<ItemState>>,
-    next_id: lumen::reactive::Signal<u32>,
+    todos: kireiui::reactive::Signal<Vec<TodoItem>>,
+    states: kireiui::reactive::Signal<Vec<ItemState>>,
+    next_id: kireiui::reactive::Signal<u32>,
 ) {
     let text = input.text();
     let trimmed = text.trim().to_string();
@@ -446,8 +446,8 @@ fn add_todo(
 }
 
 fn start_remove(
-    todos: lumen::reactive::Signal<Vec<TodoItem>>,
-    states: lumen::reactive::Signal<Vec<ItemState>>,
+    todos: kireiui::reactive::Signal<Vec<TodoItem>>,
+    states: kireiui::reactive::Signal<Vec<ItemState>>,
     index: usize,
 ) {
     let list = get(todos);

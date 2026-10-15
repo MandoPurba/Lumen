@@ -1,9 +1,9 @@
-use lumen::a11y::A11yTree;
-use lumen::reactive::{create_signal, get, set};
-use lumen::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
+use kireiui::a11y::A11yTree;
+use kireiui::reactive::{create_signal, get, set};
+use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
 
-use lumen_theme::{ColorScheme, Theme};
-use lumen_widgets::{
+use kireiui_theme::{ColorScheme, Theme};
+use kireiui_widgets::{
     button, card, checkbox, dialog, divider, icon, list_row, text, text_field, toggle,
 };
 
@@ -464,7 +464,7 @@ fn main() {
 
 fn section_header(
     cmds: &mut Vec<DrawCommand>,
-    text_ctx: &mut lumen::TextContext,
+    text_ctx: &mut kireiui::TextContext,
     theme: &Theme,
     x: f32,
     y: f32,

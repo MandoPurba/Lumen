@@ -1,27 +1,27 @@
-# Architecture — Lumen
+# Architecture — Kirei
 
 ## 1. Layer overview
 ```
 User app (components, ViewModels, Models)
 ──────────────────────────────────────────
-lumen            facade crate, re-exports, prelude
-lumen-widgets    styled components (read theme tokens)
-lumen-theme      tokens + default design system
-lumen-primitives headless: Rect, Text, Stack, Pressable, TextInput, Scroll
-lumen-data       Model store, Handle<T>, reactive queries, persistence
-lumen-core       View trait, view tree, reactive runtime, environment, events
-lumen-layout     layout engine
-lumen-text       shaping/layout/editing (cosmic-text or parley)
-lumen-render     display list → wgpu
-lumen-platform   shells: desktop (winit), web (wasm), android, ios
-lumen-macros     #[component], #[derive(Model)], #[lumen::main], view!{}
+kireiui           facade crate, re-exports, prelude
+kireiui-widgets   styled components (read theme tokens)
+kireiui-theme      tokens + default design system
+kireiui-primitives headless: Rect, Text, Stack, Pressable, TextInput, Scroll
+kireidata       Model store, Handle<T>, reactive queries, persistence
+kireiui-core       View trait, view tree, reactive runtime, environment, events
+kireiui-layout     layout engine
+kireiui-text       shaping/layout/editing (cosmic-text or parley)
+kireiui-render     display list → wgpu
+kireiui-platform   shells: desktop (winit), web (wasm), android, ios
+kireiui-macros     #[component], #[derive(Model)], #[kireiui::main], view!{}
 ```
 
 ## 2. Crate dependency rules
-- Acyclic. `lumen-core` depends on no other internal crate except `lumen-layout` types (or none — keep layout behind trait).
-- `lumen-render` knows nothing about views; consumes a display list.
-- `lumen-platform` is the only crate touching winit / web-sys / JNI / UIKit.
-- Users depend only on `lumen`.
+- Acyclic. `kireiui-core` depends on no other internal crate except `kireiui-layout` types (or none — keep layout behind trait).
+- `kireiui-render` knows nothing about views; consumes a display list.
+- `kireiui-platform` is the only crate touching winit / web-sys / JNI / UIKit.
+- Users depend only on `kireiui`.
 - `[workspace.dependencies]` pins shared versions.
 
 ## 3. Frame pipeline

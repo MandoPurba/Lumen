@@ -1,4 +1,4 @@
-# Roadmap — Lumen
+# Roadmap — Kirei
 
 Each milestone has exit criteria. Don't start next until met.
 
@@ -55,4 +55,4 @@ Each milestone has exit criteria. Don't start next until met.
 - Docs site, 3 example apps, crates.io publish (`release-plz`).
 
 ## Later
-- `view!{}` macro, `#[lumen::main]`, devtools, hot reload/preview, multi-window, more components, Elm/TCA crate.
+- `view!{}` macro, `#[kireiui::main]`, devtools, hot reload/preview, multi-window, more components, Elm/TCA crate.

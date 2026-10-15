@@ -13,7 +13,7 @@ name = "todo-mobile"
 path = "src/main.rs"
 
 [dependencies]
-lumen = { path = "../../crates/lumen", features = ["android"] }
-lumen-data = { path = "../../crates/lumen-data" }
-lumen-theme = { path = "../../crates/lumen-theme" }
-lumen-widgets = { path = "../../crates/lumen-widgets" }
+kireiui = { path = "../../crates/kireiui", features = ["android"] }
+kireidata = { path = "../../crates/kireidata" }
+kireiui-theme = { path = "../../crates/kireiui-theme" }
+kireiui-widgets = { path = "../../crates/kireiui-widgets" }

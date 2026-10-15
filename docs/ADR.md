@@ -31,7 +31,7 @@ New decisions: append, never rewrite. Superseded → mark and link.
 
 ## ADR-006: Cargo workspace monorepo
 - **Context:** Repo-per-feature vs monorepo.
-- **Decision:** Single repo, Cargo workspace, crates split by layer. Facade crate `lumen`.
+- **Decision:** Single repo, Cargo workspace, crates split by layer. Facade crate `kireiui`.
 - **Consequences:** + Atomic cross-crate changes, single CI. − Must enforce crate boundaries manually. Split repos only when a crate is stable and has outside consumers.
 
 ## ADR-007: Desktop first, then web, then mobile
@@ -65,7 +65,7 @@ New decisions: append, never rewrite. Superseded → mark and link.
 - **Consequences:** + Flexibility. − Need clear guidance docs.
 
 ## ADR-014: Entry point = App trait + run()
-- **Decision:** `impl App for MyApp { fn body(&self) -> impl Scene }` + `lumen::run(MyApp)`. `#[lumen::main]` later for platform glue.
+- **Decision:** `impl App for MyApp { fn body(&self) -> impl Scene }` + `kireiui::run(MyApp)`. `#[kireiui::main]` later for platform glue.
 
 ## ADR-015: Type-erase at component boundaries
 - **Context:** Deep generic view types blow up compile times.
@@ -78,12 +78,12 @@ New decisions: append, never rewrite. Superseded → mark and link.
 
 ## ADR-017: Web platform via conditional compilation + Canvas 2D text
 - **Context:** M9 requires wasm32 support. Key blockers: (1) wgpu/winit GPU init is async on web, (2) AccessKit has no web backend, (3) cosmic-text on wasm has no system fonts, (4) rusqlite doesn't compile on wasm.
-- **Decision:** `#[cfg(target_arch = "wasm32")]` selects web modules in `lumen-platform` and `lumen-data`. Web text rasterization uses an offscreen Canvas 2D element (browser provides fonts). Data layer uses in-memory HashMap backend on web. GPU init via `wasm_bindgen_futures::spawn_local`. AccessKit skipped on web (a11y via hidden DOM later).
+- **Decision:** `#[cfg(target_arch = "wasm32")]` selects web modules in `kireiui-platform` and `kireidata`. Web text rasterization uses an offscreen Canvas 2D element (browser provides fonts). Data layer uses in-memory HashMap backend on web. GPU init via `wasm_bindgen_futures::spawn_local`. AccessKit skipped on web (a11y via hidden DOM later).
 - **Consequences:** + Same app code compiles for desktop and web without changes. + No font bundling needed. − Canvas 2D text is per-string (not per-glyph), uses more atlas space. − Web data is in-memory only (no persistence across reloads yet; IndexedDB/OPFS can be added).
 
 ## ADR-018: Mobile platform via separate module + touch translation
 - **Context:** M10 requires Android and iOS support. winit 0.30 supports both platforms. AccessKit has no Android backend. On mobile, GPU surfaces must be released on suspend/resume lifecycle.
-- **Decision:** Separate `mobile.rs` module in `lumen-platform`, selected via `#[cfg(any(target_os = "android", target_os = "ios"))]`. Touch events translated to existing PointerPressed/Released/Moved events in shared `common.rs`. No AccessKit on mobile (platform a11y later). Proper suspend/resume drops and recreates GPU state. Android entry point via thread-local `AndroidApp` + `set_android_app()`. iOS uses standard `EventLoop::new()`.
+- **Decision:** Separate `mobile.rs` module in `kireiui-platform`, selected via `#[cfg(any(target_os = "android", target_os = "ios"))]`. Touch events translated to existing PointerPressed/Released/Moved events in shared `common.rs`. No AccessKit on mobile (platform a11y later). Proper suspend/resume drops and recreates GPU state. Android entry point via thread-local `AndroidApp` + `set_android_app()`. iOS uses standard `EventLoop::new()`.
 - **Consequences:** + Same rendering pipeline and app code on all platforms. + Touch works without new event types. − No accessibility on mobile yet. − Android builds need NDK + cargo-ndk. − No multi-touch/gestures yet (single-finger only).
 
 ---

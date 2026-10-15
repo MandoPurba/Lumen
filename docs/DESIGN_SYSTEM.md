@@ -6,10 +6,10 @@ Status: Draft. Fill `TBD` before M7.
 - e.g. Calm · Clear hierarchy · Fast feedback · Soft geometry · Motion with purpose
 
 ## 2. Architecture
-- **Primitives** (`lumen-primitives`): unstyled. Always available.
-- **Tokens** (`lumen-theme`): semantic values, light + dark.
-- **Components** (`lumen-widgets`): styled, read tokens only.
-- Opt-out: `lumen = { default-features = false }` → primitives only.
+- **Primitives** (`kireiui-primitives`): unstyled. Always available.
+- **Tokens** (`kireiui-theme`): semantic values, light + dark.
+- **Components** (`kireiui-widgets`): styled, read tokens only.
+- Opt-out: `kireiui = { default-features = false }` → primitives only.
 - Per-widget override via style traits (`ButtonStyle`, `FieldStyle`, …).
 
 ## 3. Tokens

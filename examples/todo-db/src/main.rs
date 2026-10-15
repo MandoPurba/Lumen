@@ -1,11 +1,11 @@
-use lumen::a11y::A11yTree;
-use lumen::reactive::{create_signal, get, set};
-use lumen::text_input::TextEditState;
-use lumen::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
+use kireiui::a11y::A11yTree;
+use kireiui::reactive::{create_signal, get, set};
+use kireiui::text_input::TextEditState;
+use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
 
-use lumen_data::{self, Handle, Model};
-use lumen_theme::Theme;
-use lumen_widgets::{button, checkbox, divider, text, text_field};
+use kireidata::{self, Handle, Model};
+use kireiui_theme::Theme;
+use kireiui_widgets::{button, checkbox, divider, text, text_field};
 
 #[derive(Clone, PartialEq, Model)]
 struct Todo {
@@ -15,12 +15,12 @@ struct Todo {
 }
 
 fn main() {
-    lumen_data::open("todo.db").expect("failed to open database");
-    lumen_data::register::<Todo>().expect("failed to register Todo table");
+    kireidata::open("todo.db").expect("failed to open database");
+    kireidata::register::<Todo>().expect("failed to register Todo table");
 
     let input = TextEditState::new();
     let scroll_y = create_signal(0.0_f32);
-    let todos_sig = lumen_data::query_all::<Todo>();
+    let todos_sig = kireidata::query_all::<Todo>();
 
     run_app(move |w, h, text_ctx, events| {
         let theme = Theme::light();
@@ -39,7 +39,7 @@ fn main() {
                     if hit_test(*x, *y, w - 40.0 - 80.0, 20.0 - sy, 80.0, 36.0) {
                         let text = input.text();
                         if !text.is_empty() {
-                            lumen_data::insert(Todo {
+                            kireidata::insert(Todo {
                                 id: 0,
                                 title: text,
                                 done: false,
@@ -58,12 +58,12 @@ fn main() {
                             let handle: Handle<Todo> = Handle::from_id(todo.id);
                             let mut updated = todo.clone();
                             updated.done = !updated.done;
-                            lumen_data::save(handle, &updated).ok();
+                            kireidata::save(handle, &updated).ok();
                         }
                         // Delete button
                         if hit_test(*x, *y, w - 40.0 - 60.0, row_y + 4.0, 60.0, 36.0) {
                             let handle: Handle<Todo> = Handle::from_id(todo.id);
-                            lumen_data::delete(handle).ok();
+                            kireidata::delete(handle).ok();
                         }
                     }
                 }
@@ -72,7 +72,7 @@ fn main() {
                 } => {
                     let text = input.text();
                     if !text.is_empty() {
-                        lumen_data::insert(Todo {
+                        kireidata::insert(Todo {
                             id: 0,
                             title: text,
                             done: false,

@@ -1,4 +1,4 @@
-use lumen::{run_with_text, Color, DrawCommand, TextBuffer};
+use kireiui::{run_with_text, Color, DrawCommand, TextBuffer};
 
 fn main() {
     let mut buffer: Option<TextBuffer> = None;

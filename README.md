@@ -1,6 +1,6 @@
-# Lumen
+# KireiUI
 
-Declarative, cross-platform UI framework in pure Rust.
+Declarative, cross-platform UI framework in pure Rust. *Kirei (綺麗) — beautiful.*
 
 SwiftUI/Compose-style API. Own GPU renderer (wgpu). Own design system. Built-in reactive data layer. No HTML/CSS.
 
@@ -23,15 +23,15 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-lumen = "0.1"
+kireiui = "0.1"
 ```
 
 A minimal counter app:
 
 ```rust
-use lumen::reactive::{create_signal, get, set};
-use lumen::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, TextDraw};
-use lumen::a11y::A11yTree;
+use kireiui::reactive::{create_signal, get, set};
+use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, TextDraw};
+use kireiui::a11y::A11yTree;
 
 fn main() {
     let count = create_signal(0i32);
@@ -94,19 +94,19 @@ cargo run -p todo-db
 ## Architecture
 
 ```
-lumen              facade crate (re-exports everything)
-lumen-widgets      styled components (buttons, text fields, checkboxes, ...)
-lumen-theme        design tokens, light/dark themes, contrast validation
-lumen-primitives   headless views (VStack, HStack, ZStack, SizedBox)
-lumen-data         Model store, Handle<T>, reactive queries, persistence
-lumen-core         View trait, reactive runtime, events, animation, a11y, focus
-lumen-layout       constraint-based layout engine
-lumen-text         text shaping/rasterization (cosmic-text)
-lumen-render       display list → wgpu GPU renderer
-lumen-platform     platform shells (desktop, web, mobile)
+kireiui             facade crate (re-exports everything)
+kireiui-widgets     styled components (buttons, text fields, checkboxes, ...)
+kireiui-theme        design tokens, light/dark themes, contrast validation
+kireiui-primitives   headless views (VStack, HStack, ZStack, SizedBox)
+kireidata         Model store, Handle<T>, reactive queries, persistence
+kireiui-core         View trait, reactive runtime, events, animation, a11y, focus
+kireiui-layout       constraint-based layout engine
+kireiui-text         text shaping/rasterization (cosmic-text)
+kireiui-render       display list → wgpu GPU renderer
+kireiui-platform     platform shells (desktop, web, mobile)
 ```
 
-Users depend only on the `lumen` facade crate.
+Users depend only on the `kireiui` facade crate.
 
 ## Building
 
