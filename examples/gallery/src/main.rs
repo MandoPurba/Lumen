@@ -1,9 +1,9 @@
-use kireiui::a11y::A11yTree;
-use kireiui::reactive::{create_signal, get, set};
-use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
+use sihora::a11y::A11yTree;
+use sihora::reactive::{create_signal, get, set};
+use sihora::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
 
-use kireiui_theme::{ColorScheme, Theme};
-use kireiui_widgets::{
+use sihora_theme::{ColorScheme, Theme};
+use sihora_widgets::{
     button, card, checkbox, dialog, divider, icon, list_row, text, text_field, toggle,
 };
 
@@ -464,7 +464,7 @@ fn main() {
 
 fn section_header(
     cmds: &mut Vec<DrawCommand>,
-    text_ctx: &mut kireiui::TextContext,
+    text_ctx: &mut sihora::TextContext,
     theme: &Theme,
     x: f32,
     y: f32,

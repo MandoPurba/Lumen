@@ -1,13 +1,13 @@
 use std::sync::OnceLock;
 
-use kireiui::a11y::A11yTree;
-use kireiui::reactive::{create_signal, get, set};
-use kireiui::text_input::TextEditState;
-use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
+use sihora::a11y::A11yTree;
+use sihora::reactive::{create_signal, get, set};
+use sihora::text_input::TextEditState;
+use sihora::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, Key, TextDraw};
 
-use kireidata::{self, Handle, Model};
-use kireiui_theme::Theme;
-use kireiui_widgets::{button, checkbox, divider, text, text_field};
+use sihora_data::{self, Handle, Model};
+use sihora_theme::Theme;
+use sihora_widgets::{button, checkbox, divider, text, text_field};
 
 #[derive(Clone, PartialEq, Model)]
 struct Todo {
@@ -24,12 +24,12 @@ fn db_path() -> &'static str {
 
 /// Run the todo app. Call `set_db_path` first on platforms that need a specific data directory.
 pub fn todo_app() {
-    kireidata::open(db_path()).expect("failed to open database");
-    kireidata::register::<Todo>().expect("failed to register Todo table");
+    sihora_data::open(db_path()).expect("failed to open database");
+    sihora_data::register::<Todo>().expect("failed to register Todo table");
 
     let input = TextEditState::new();
     let scroll_y = create_signal(0.0_f32);
-    let todos_sig = kireidata::query_all::<Todo>();
+    let todos_sig = sihora_data::query_all::<Todo>();
 
     run_app(move |w, h, text_ctx, events| {
         let theme = Theme::light();
@@ -47,7 +47,7 @@ pub fn todo_app() {
                     if hit_test(*x, *y, w - 40.0 - 80.0, 20.0 - sy, 80.0, 36.0) {
                         let text = input.text();
                         if !text.is_empty() {
-                            kireidata::insert(Todo {
+                            sihora_data::insert(Todo {
                                 id: 0,
                                 title: text,
                                 done: false,
@@ -64,11 +64,11 @@ pub fn todo_app() {
                             let handle: Handle<Todo> = Handle::from_id(todo.id);
                             let mut updated = todo.clone();
                             updated.done = !updated.done;
-                            kireidata::save(handle, &updated).ok();
+                            sihora_data::save(handle, &updated).ok();
                         }
                         if hit_test(*x, *y, w - 40.0 - 60.0, row_y + 4.0, 60.0, 36.0) {
                             let handle: Handle<Todo> = Handle::from_id(todo.id);
-                            kireidata::delete(handle).ok();
+                            sihora_data::delete(handle).ok();
                         }
                     }
                 }
@@ -77,7 +77,7 @@ pub fn todo_app() {
                 } => {
                     let text = input.text();
                     if !text.is_empty() {
-                        kireidata::insert(Todo {
+                        sihora_data::insert(Todo {
                             id: 0,
                             title: text,
                             done: false,
@@ -247,11 +247,11 @@ pub fn set_db_path(path: String) {
 
 #[cfg(target_os = "android")]
 #[no_mangle]
-fn android_main(app: kireiui::AndroidApp) {
+fn android_main(app: sihora::AndroidApp) {
     if let Some(path) = app.internal_data_path() {
         let _ = std::fs::create_dir_all(&path);
         set_db_path(path.join("todo.db").to_string_lossy().into_owned());
     }
-    kireiui::set_android_app(app);
+    sihora::set_android_app(app);
     todo_app();
 }

@@ -1,6 +1,6 @@
-# PRD — KireiUI Framework
+# PRD — Sihora Framework
 
-> Working name: **Kirei**. Rename via find/replace.
+> Working name: **Sihora**. Rename via find/replace.
 > Status: Draft v0.1 · Owner: you · Last updated: 2026-10-14
 
 ## 1. Vision
@@ -35,8 +35,8 @@ One codebase → desktop, web, mobile. Pixel-consistent.
 ## 6. Functional requirements
 
 ### 6.1 App model
-- `App` trait + `fn main() { kireiui::run(MyApp) }`.
-- Later: `#[kireiui::main]` macro generating desktop/wasm/mobile entry glue.
+- `App` trait + `fn main() { sihora::run(MyApp) }`.
+- Later: `#[sihora::main]` macro generating desktop/wasm/mobile entry glue.
 - Multi-window (desktop).
 
 ### 6.2 View system

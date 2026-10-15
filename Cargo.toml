@@ -1,17 +1,17 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/kireiui",
-    "crates/kireiui-core",
-    "crates/kireiui-layout",
-    "crates/kireiui-primitives",
-    "crates/kireiui-render",
-    "crates/kireiui-text",
-    "crates/kireiui-theme",
-    "crates/kireiui-widgets",
-    "crates/kireidata",
-    "crates/kireidata-derive",
-    "crates/kireiui-platform",
+    "crates/sihora",
+    "crates/sihora-core",
+    "crates/sihora-layout",
+    "crates/sihora-primitives",
+    "crates/sihora-render",
+    "crates/sihora-text",
+    "crates/sihora-theme",
+    "crates/sihora-widgets",
+    "crates/sihora-data",
+    "crates/sihora-data-derive",
+    "crates/sihora-platform",
     "examples/shapes",
     "examples/text",
     "examples/counter",
@@ -24,20 +24,20 @@ members = [
 [workspace.package]
 edition = "2021"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/MandoPurba/Kirei"
+repository = "https://github.com/sihora/sihora"
 rust-version = "1.97"
 
 [workspace.dependencies]
-kireiui-core = { path = "crates/kireiui-core", version = "0.1.0" }
-kireiui-layout = { path = "crates/kireiui-layout", version = "0.1.0" }
-kireiui-primitives = { path = "crates/kireiui-primitives", version = "0.1.0" }
-kireiui-render = { path = "crates/kireiui-render", version = "0.1.0" }
-kireiui-text = { path = "crates/kireiui-text", version = "0.1.0" }
-kireidata = { path = "crates/kireidata", version = "0.1.0" }
-kireidata-derive = { path = "crates/kireidata-derive", version = "0.1.0" }
-kireiui-theme = { path = "crates/kireiui-theme", version = "0.1.0" }
-kireiui-widgets = { path = "crates/kireiui-widgets", version = "0.1.0" }
-kireiui-platform = { path = "crates/kireiui-platform", version = "0.1.0" }
+sihora-core = { path = "crates/sihora-core", version = "0.1.0" }
+sihora-layout = { path = "crates/sihora-layout", version = "0.1.0" }
+sihora-primitives = { path = "crates/sihora-primitives", version = "0.1.0" }
+sihora-render = { path = "crates/sihora-render", version = "0.1.0" }
+sihora-text = { path = "crates/sihora-text", version = "0.1.0" }
+sihora-data = { path = "crates/sihora-data", version = "0.1.0" }
+sihora-data-derive = { path = "crates/sihora-data-derive", version = "0.1.0" }
+sihora-theme = { path = "crates/sihora-theme", version = "0.1.0" }
+sihora-widgets = { path = "crates/sihora-widgets", version = "0.1.0" }
+sihora-platform = { path = "crates/sihora-platform", version = "0.1.0" }
 cosmic-text = "0.12"
 slotmap = "1"
 wgpu = "24"

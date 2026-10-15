@@ -1,27 +1,27 @@
-# Architecture — Kirei
+# Architecture — Sihora
 
 ## 1. Layer overview
 ```
 User app (components, ViewModels, Models)
 ──────────────────────────────────────────
-kireiui           facade crate, re-exports, prelude
-kireiui-widgets   styled components (read theme tokens)
-kireiui-theme      tokens + default design system
-kireiui-primitives headless: Rect, Text, Stack, Pressable, TextInput, Scroll
-kireidata       Model store, Handle<T>, reactive queries, persistence
-kireiui-core       View trait, view tree, reactive runtime, environment, events
-kireiui-layout     layout engine
-kireiui-text       shaping/layout/editing (cosmic-text or parley)
-kireiui-render     display list → wgpu
-kireiui-platform   shells: desktop (winit), web (wasm), android, ios
-kireiui-macros     #[component], #[derive(Model)], #[kireiui::main], view!{}
+sihora           facade crate, re-exports, prelude
+sihora-widgets   styled components (read theme tokens)
+sihora-theme      tokens + default design system
+sihora-primitives headless: Rect, Text, Stack, Pressable, TextInput, Scroll
+sihora-data       Model store, Handle<T>, reactive queries, persistence
+sihora-core       View trait, view tree, reactive runtime, environment, events
+sihora-layout     layout engine
+sihora-text       shaping/layout/editing (cosmic-text or parley)
+sihora-render     display list → wgpu
+sihora-platform   shells: desktop (winit), web (wasm), android, ios
+sihora-macros     #[component], #[derive(Model)], #[sihora::main], view!{}
 ```
 
 ## 2. Crate dependency rules
-- Acyclic. `kireiui-core` depends on no other internal crate except `kireiui-layout` types (or none — keep layout behind trait).
-- `kireiui-render` knows nothing about views; consumes a display list.
-- `kireiui-platform` is the only crate touching winit / web-sys / JNI / UIKit.
-- Users depend only on `kireiui`.
+- Acyclic. `sihora-core` depends on no other internal crate except `sihora-layout` types (or none — keep layout behind trait).
+- `sihora-render` knows nothing about views; consumes a display list.
+- `sihora-platform` is the only crate touching winit / web-sys / JNI / UIKit.
+- Users depend only on `sihora`.
 - `[workspace.dependencies]` pins shared versions.
 
 ## 3. Frame pipeline

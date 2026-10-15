@@ -1,5 +1,5 @@
-use kireiui::reactive::{create_effect, create_signal, get, update};
-use kireiui::{run_reactive, Color, DrawCommand, Event};
+use sihora::reactive::{create_effect, create_signal, get, update};
+use sihora::{run_reactive, Color, DrawCommand, Event};
 
 fn main() {
     let count = create_signal(0_i32);

@@ -1,7 +1,7 @@
-use kireiui::{Color, DrawCommand};
+use sihora::{Color, DrawCommand};
 
 fn main() {
-    kireiui::run(|width, height| {
+    sihora::run(|width, height| {
         let mut cmds = Vec::with_capacity(1000);
         for i in 0..1000 {
             let f = i as f32;

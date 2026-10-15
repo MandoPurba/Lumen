@@ -1,6 +1,6 @@
-# KireiUI
+# Sihora
 
-Declarative, cross-platform UI framework in pure Rust. *Kirei (綺麗) — beautiful.*
+Declarative, cross-platform UI framework in pure Rust. *Sihora — from Simalungun Batak calendar, the day of calm.*
 
 SwiftUI/Compose-style API. Own GPU renderer (wgpu). Own design system. Built-in reactive data layer. No HTML/CSS.
 
@@ -23,15 +23,15 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-kireiui = "0.1"
+sihora = "0.1"
 ```
 
 A minimal counter app:
 
 ```rust
-use kireiui::reactive::{create_signal, get, set};
-use kireiui::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, TextDraw};
-use kireiui::a11y::A11yTree;
+use sihora::reactive::{create_signal, get, set};
+use sihora::{hit_test, run_app, AppFrame, Color, DrawCommand, Event, TextDraw};
+use sihora::a11y::A11yTree;
 
 fn main() {
     let count = create_signal(0i32);
@@ -94,19 +94,19 @@ cargo run -p todo-db
 ## Architecture
 
 ```
-kireiui             facade crate (re-exports everything)
-kireiui-widgets     styled components (buttons, text fields, checkboxes, ...)
-kireiui-theme        design tokens, light/dark themes, contrast validation
-kireiui-primitives   headless views (VStack, HStack, ZStack, SizedBox)
-kireidata         Model store, Handle<T>, reactive queries, persistence
-kireiui-core         View trait, reactive runtime, events, animation, a11y, focus
-kireiui-layout       constraint-based layout engine
-kireiui-text         text shaping/rasterization (cosmic-text)
-kireiui-render       display list → wgpu GPU renderer
-kireiui-platform     platform shells (desktop, web, mobile)
+sihora             facade crate (re-exports everything)
+sihora-widgets     styled components (buttons, text fields, checkboxes, ...)
+sihora-theme        design tokens, light/dark themes, contrast validation
+sihora-primitives   headless views (VStack, HStack, ZStack, SizedBox)
+sihora-data         Model store, Handle<T>, reactive queries, persistence
+sihora-core         View trait, reactive runtime, events, animation, a11y, focus
+sihora-layout       constraint-based layout engine
+sihora-text         text shaping/rasterization (cosmic-text)
+sihora-render       display list → wgpu GPU renderer
+sihora-platform     platform shells (desktop, web, mobile)
 ```
 
-Users depend only on the `kireiui` facade crate.
+Users depend only on the `sihora` facade crate.
 
 ## Building
 

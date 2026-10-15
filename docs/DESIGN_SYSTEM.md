@@ -6,10 +6,10 @@ Status: Draft. Fill `TBD` before M7.
 - e.g. Calm · Clear hierarchy · Fast feedback · Soft geometry · Motion with purpose
 
 ## 2. Architecture
-- **Primitives** (`kireiui-primitives`): unstyled. Always available.
-- **Tokens** (`kireiui-theme`): semantic values, light + dark.
-- **Components** (`kireiui-widgets`): styled, read tokens only.
-- Opt-out: `kireiui = { default-features = false }` → primitives only.
+- **Primitives** (`sihora-primitives`): unstyled. Always available.
+- **Tokens** (`sihora-theme`): semantic values, light + dark.
+- **Components** (`sihora-widgets`): styled, read tokens only.
+- Opt-out: `sihora = { default-features = false }` → primitives only.
 - Per-widget override via style traits (`ButtonStyle`, `FieldStyle`, …).
 
 ## 3. Tokens

@@ -1,4 +1,4 @@
-# CLAUDE.md — Kirei
+# CLAUDE.md — Sihora
 
 Cross-platform declarative UI framework in pure Rust. SwiftUI/Compose-style API, own wgpu renderer, own design system, SwiftData-like data layer. No HTML/CSS.
 
@@ -14,12 +14,12 @@ M11 — v0.1 public release. (Update this line when moving on.)
 
 ## Workspace
 - Monorepo, Cargo workspace, crates under `crates/`, examples under `examples/`.
-- Facade crate `kireiui` re-exports everything; examples depend only on `kireiui`.
+- Facade crate `sihora` re-exports everything; examples depend only on `sihora`.
 - Shared deps in `[workspace.dependencies]`.
 
 ## Hard rules
-- Respect crate boundaries (see ARCHITECTURE §2). Only `kireiui-platform` touches winit/web-sys/OS APIs.
-- `kireiui-core` must compile on `wasm32-unknown-unknown`: no threads, no blocking I/O, no `std::fs`.
+- Respect crate boundaries (see ARCHITECTURE §2). Only `sihora-platform` touches winit/web-sys/OS APIs.
+- `sihora-core` must compile on `wasm32-unknown-unknown`: no threads, no blocking I/O, no `std::fs`.
 - Widgets use semantic theme tokens only. No raw colors/sizes.
 - No `Rc<RefCell<T>>` for user-facing state; use signal/handle IDs.
 - No `unwrap()`/`expect()` in library code except proven invariants (comment why).
@@ -32,7 +32,7 @@ M11 — v0.1 public release. (Update this line when moving on.)
 cargo fmt --all
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-cargo check -p kireiui-core --target wasm32-unknown-unknown
+cargo check -p sihora-core --target wasm32-unknown-unknown
 cargo run -p <example>
 ```
 

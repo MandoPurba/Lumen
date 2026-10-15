@@ -5,7 +5,7 @@ edition.workspace = true
 publish = false
 
 [dependencies]
-kireiui = { path = "../../crates/kireiui" }
-kireidata = { path = "../../crates/kireidata" }
-kireiui-theme = { path = "../../crates/kireiui-theme" }
-kireiui-widgets = { path = "../../crates/kireiui-widgets" }
+sihora = { path = "../../crates/sihora" }
+sihora-data = { path = "../../crates/sihora-data" }
+sihora-theme = { path = "../../crates/sihora-theme" }
+sihora-widgets = { path = "../../crates/sihora-widgets" }
