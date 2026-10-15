@@ -39,7 +39,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Tokens, light/dark, 10 components, gallery app, contrast tests.
 - **Exit:** gallery shows all components/states; AA contrast tests pass.
 
-## M8 — Data layer
+## M8 — Data layer ✓
 - `#[derive(Model)]`, `Handle<T>`, reactive `query`, SQLite backend, migrations v1.
 - **Exit:** persistent todo app; UI updates on write; survives restart.
 
