@@ -7,11 +7,14 @@ members = [
     "crates/lumen-primitives",
     "crates/lumen-render",
     "crates/lumen-text",
+    "crates/lumen-theme",
+    "crates/lumen-widgets",
     "crates/lumen-platform",
     "examples/shapes",
     "examples/text",
     "examples/counter",
     "examples/todo",
+    "examples/gallery",
 ]
 
 [workspace.package]
@@ -26,6 +29,8 @@ lumen-layout = { path = "crates/lumen-layout" }
 lumen-primitives = { path = "crates/lumen-primitives" }
 lumen-render = { path = "crates/lumen-render" }
 lumen-text = { path = "crates/lumen-text" }
+lumen-theme = { path = "crates/lumen-theme" }
+lumen-widgets = { path = "crates/lumen-widgets" }
 lumen-platform = { path = "crates/lumen-platform" }
 cosmic-text = "0.12"
 slotmap = "1"
