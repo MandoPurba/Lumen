@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <!-- Clip garis agar tidak keluar dari diamond putih -->
+    <clipPath id="diamond-clip">
+      <polygon points="400,75 725,400 400,725 75,400"/>
+    </clipPath>
+  </defs>
+
+  <!-- Outer red diamond border -->
+  <polygon points="400,20 780,400 400,780 20,400" fill="#c41e1e"/>
+  <!-- Black diamond -->
+  <polygon points="400,50 750,400 400,750 50,400" fill="#0a0a0a"/>
+  <!-- White inner diamond -->
+  <polygon points="400,75 725,400 400,725 75,400" fill="#ffffff"/>
+
+  <!-- Garis cross + diagonal — di-clip dalam diamond -->
+  <g clip-path="url(#diamond-clip)">
+    <line x1="400" y1="75" x2="400" y2="725" stroke="#0a0a0a" stroke-width="1.2"/>
+    <line x1="75" y1="400" x2="725" y2="400" stroke="#0a0a0a" stroke-width="1.2"/>
+    <line x1="175" y1="175" x2="625" y2="625" stroke="#0a0a0a" stroke-width="0.8"/>
+    <line x1="625" y1="175" x2="175" y2="625" stroke="#0a0a0a" stroke-width="0.8"/>
+  </g>
+
+  <!-- Center red cross flower — 4 cardinal double petals -->
+  <!-- Top -->
+  <path d="M400,280 C414,320 414,355 400,380 C386,355 386,320 400,280Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1.2"/>
+  <path d="M400,235 C409,258 409,275 400,285 C391,275 391,258 400,235Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1"/>
+  <!-- Bottom -->
+  <path d="M400,520 C414,480 414,445 400,420 C386,445 386,480 400,520Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1.2"/>
+  <path d="M400,565 C409,542 409,525 400,515 C391,525 391,542 400,565Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1"/>
+  <!-- Left -->
+  <path d="M280,400 C320,386 355,386 380,400 C355,414 320,414 280,400Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1.2"/>
+  <path d="M235,400 C258,391 275,391 285,400 C275,409 258,409 235,400Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1"/>
+  <!-- Right -->
+  <path d="M520,400 C480,386 445,386 420,400 C445,414 480,414 520,400Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1.2"/>
+  <path d="M565,400 C542,391 525,391 515,400 C525,409 542,409 565,400Z" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1"/>
+
+  <!-- Center dot -->
+  <circle cx="400" cy="400" r="10" fill="#c41e1e" stroke="#0a0a0a" stroke-width="1.5"/>
+
+  <!-- Top corner ornament -->
+  <g>
+    <path d="M400,105 C440,150 450,200 428,230 C450,208 478,198 505,208 C472,175 442,142 400,105Z" fill="#0a0a0a"/>
+    <path d="M400,105 C360,150 350,200 372,230 C350,208 322,198 295,208 C328,175 358,142 400,105Z" fill="#0a0a0a"/>
+    <path d="M340,185 C350,165 335,148 318,158 C330,168 335,178 340,185Z" fill="#ffffff"/>
+    <path d="M460,185 C450,165 465,148 482,158 C470,168 465,178 460,185Z" fill="#ffffff"/>
+    <circle cx="362" cy="160" r="6" fill="#c41e1e"/>
+    <circle cx="438" cy="160" r="6" fill="#c41e1e"/>
+    <path d="M350,212 C340,200 323,205 328,220 C334,210 344,207 350,212Z" fill="#0a0a0a"/>
+    <path d="M450,212 C460,200 477,205 472,220 C466,210 456,207 450,212Z" fill="#0a0a0a"/>
+  </g>
+
+  <!-- Bottom corner ornament -->
+  <g>
+    <path d="M400,695 C440,650 450,600 428,570 C450,592 478,602 505,592 C472,625 442,658 400,695Z" fill="#0a0a0a"/>
+    <path d="M400,695 C360,650 350,600 372,570 C350,592 322,602 295,592 C328,625 358,658 400,695Z" fill="#0a0a0a"/>
+    <path d="M340,615 C350,635 335,652 318,642 C330,632 335,622 340,615Z" fill="#ffffff"/>
+    <path d="M460,615 C450,635 465,652 482,642 C470,632 465,622 460,615Z" fill="#ffffff"/>
+    <circle cx="362" cy="640" r="6" fill="#c41e1e"/>
+    <circle cx="438" cy="640" r="6" fill="#c41e1e"/>
+    <path d="M350,588 C340,600 323,595 328,580 C334,590 344,593 350,588Z" fill="#0a0a0a"/>
+    <path d="M450,588 C460,600 477,595 472,580 C466,590 456,593 450,588Z" fill="#0a0a0a"/>
+  </g>
+
+  <!-- Left corner ornament -->
+  <g>
+    <path d="M105,400 C150,360 200,350 230,372 C208,350 198,322 208,295 C175,328 142,358 105,400Z" fill="#0a0a0a"/>
+    <path d="M105,400 C150,440 200,450 230,428 C208,450 198,478 208,505 C175,472 142,442 105,400Z" fill="#0a0a0a"/>
+    <path d="M185,340 C165,350 148,335 158,318 C168,330 178,335 185,340Z" fill="#ffffff"/>
+    <path d="M185,460 C165,450 148,465 158,482 C168,470 178,465 185,460Z" fill="#ffffff"/>
+    <circle cx="160" cy="362" r="6" fill="#c41e1e"/>
+    <circle cx="160" cy="438" r="6" fill="#c41e1e"/>
+    <path d="M212,350 C200,340 205,323 220,328 C210,334 207,344 212,350Z" fill="#0a0a0a"/>
+    <path d="M212,450 C200,460 205,477 220,472 C210,466 207,456 212,450Z" fill="#0a0a0a"/>
+  </g>
+
+  <!-- Right corner ornament -->
+  <g>
+    <path d="M695,400 C650,360 600,350 570,372 C592,350 602,322 592,295 C625,328 658,358 695,400Z" fill="#0a0a0a"/>
+    <path d="M695,400 C650,440 600,450 570,428 C592,450 602,478 592,505 C625,472 658,442 695,400Z" fill="#0a0a0a"/>
+    <path d="M615,340 C635,350 652,335 642,318 C632,330 622,335 615,340Z" fill="#ffffff"/>
+    <path d="M615,460 C635,450 652,465 642,482 C632,470 622,465 615,460Z" fill="#ffffff"/>
+    <circle cx="640" cy="362" r="6" fill="#c41e1e"/>
+    <circle cx="640" cy="438" r="6" fill="#c41e1e"/>
+    <path d="M588,350 C600,340 595,323 580,328 C590,334 593,344 588,350Z" fill="#0a0a0a"/>
+    <path d="M588,450 C600,460 595,477 580,472 C590,466 593,456 588,450Z" fill="#0a0a0a"/>
+  </g>
+
+  <!-- Red accent triangles at diamond tips (in black border area) -->
+  <polygon points="400,55 408,72 392,72" fill="#c41e1e"/>
+  <polygon points="400,745 408,728 392,728" fill="#c41e1e"/>
+  <polygon points="55,400 72,392 72,408" fill="#c41e1e"/>
+  <polygon points="745,400 728,392 728,408" fill="#c41e1e"/>
+</svg>

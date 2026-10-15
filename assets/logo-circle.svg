@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <!-- Outer ring border -->
+  <circle cx="400" cy="400" r="380" fill="none" stroke="#0a0a0a" stroke-width="4"/>
+  <circle cx="400" cy="400" r="360" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+
+  <!-- Ornamental ring band (black background) -->
+  <path d="M400,40 A360,360 0 1,1 399.99,40Z" fill="#0a0a0a"/>
+  <circle cx="400" cy="400" r="270" fill="#ffffff"/>
+  <circle cx="400" cy="400" r="270" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+
+  <!-- Vine ornaments in the ring band — using simplified leaf/scroll shapes -->
+  <!-- Top vine -->
+  <path d="M310,80 C330,100 340,130 330,150 C350,130 370,120 400,115 C380,100 350,85 310,80Z" fill="#ffffff"/>
+  <path d="M490,80 C470,100 460,130 470,150 C450,130 430,120 400,115 C420,100 450,85 490,80Z" fill="#ffffff"/>
+  <circle cx="350" cy="105" r="6" fill="#c41e1e"/>
+  <circle cx="450" cy="105" r="6" fill="#c41e1e"/>
+
+  <!-- Right vine -->
+  <path d="M720,310 C700,330 670,340 650,330 C670,350 680,370 685,400 C700,380 715,350 720,310Z" fill="#ffffff"/>
+  <path d="M720,490 C700,470 670,460 650,470 C670,450 680,430 685,400 C700,420 715,450 720,490Z" fill="#ffffff"/>
+  <circle cx="695" cy="350" r="6" fill="#c41e1e"/>
+  <circle cx="695" cy="450" r="6" fill="#c41e1e"/>
+
+  <!-- Bottom vine -->
+  <path d="M310,720 C330,700 340,670 330,650 C350,670 370,680 400,685 C380,700 350,715 310,720Z" fill="#ffffff"/>
+  <path d="M490,720 C470,700 460,670 470,650 C450,670 430,680 400,685 C420,700 450,715 490,720Z" fill="#ffffff"/>
+  <circle cx="350" cy="695" r="6" fill="#c41e1e"/>
+  <circle cx="450" cy="695" r="6" fill="#c41e1e"/>
+
+  <!-- Left vine -->
+  <path d="M80,310 C100,330 130,340 150,330 C130,350 120,370 115,400 C100,380 85,350 80,310Z" fill="#ffffff"/>
+  <path d="M80,490 C100,470 130,460 150,470 C130,450 120,430 115,400 C100,420 85,450 80,490Z" fill="#ffffff"/>
+  <circle cx="105" cy="350" r="6" fill="#c41e1e"/>
+  <circle cx="105" cy="450" r="6" fill="#c41e1e"/>
+
+  <!-- Diagonal vine pairs -->
+  <!-- Top-right -->
+  <path d="M600,130 C580,150 570,175 580,195 C560,175 540,165 520,170 C545,150 570,135 600,130Z" fill="#ffffff"/>
+  <circle cx="570" cy="155" r="6" fill="#c41e1e"/>
+  <!-- Top-left -->
+  <path d="M200,130 C220,150 230,175 220,195 C240,175 260,165 280,170 C255,150 230,135 200,130Z" fill="#ffffff"/>
+  <circle cx="230" cy="155" r="6" fill="#c41e1e"/>
+  <!-- Bottom-right -->
+  <path d="M600,670 C580,650 570,625 580,605 C560,625 540,635 520,630 C545,650 570,665 600,670Z" fill="#ffffff"/>
+  <circle cx="570" cy="645" r="6" fill="#c41e1e"/>
+  <!-- Bottom-left -->
+  <path d="M200,670 C220,650 230,625 220,605 C240,625 260,635 280,630 C255,650 230,665 200,670Z" fill="#ffffff"/>
+  <circle cx="230" cy="645" r="6" fill="#c41e1e"/>
+
+  <!-- Inner cross lines -->
+  <line x1="400" y1="135" x2="400" y2="665" stroke="#0a0a0a" stroke-width="3"/>
+  <line x1="135" y1="400" x2="665" y2="400" stroke="#0a0a0a" stroke-width="3"/>
+
+  <!-- Diagonal spoke lines -->
+  <line x1="215" y1="215" x2="585" y2="585" stroke="#0a0a0a" stroke-width="1.5"/>
+  <line x1="585" y1="215" x2="215" y2="585" stroke="#0a0a0a" stroke-width="1.5"/>
+
+  <!-- Center 8-pointed star flower -->
+  <!-- Cardinal petals (larger, pointed) -->
+  <path d="M400,210 C420,300 420,340 400,370 C380,340 380,300 400,210Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M400,590 C420,500 420,460 400,430 C380,460 380,500 400,590Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M210,400 C300,380 340,380 370,400 C340,420 300,420 210,400Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M590,400 C500,380 460,380 430,400 C460,420 500,420 590,400Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+
+  <!-- Diagonal petals (slightly smaller) -->
+  <path d="M265,265 C310,320 330,350 365,365 C350,330 320,310 265,265Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M535,265 C490,320 470,350 435,365 C450,330 480,310 535,265Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M265,535 C310,480 330,450 365,435 C350,470 320,490 265,535Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+  <path d="M535,535 C490,480 470,450 435,435 C450,470 480,490 535,535Z" fill="#ffffff" stroke="#0a0a0a" stroke-width="1.5"/>
+
+  <!-- Petal inner lines (veins) -->
+  <line x1="400" y1="240" x2="400" y2="350" stroke="#0a0a0a" stroke-width="0.5"/>
+  <line x1="400" y1="560" x2="400" y2="450" stroke="#0a0a0a" stroke-width="0.5"/>
+  <line x1="240" y1="400" x2="350" y2="400" stroke="#0a0a0a" stroke-width="0.5"/>
+  <line x1="560" y1="400" x2="450" y2="400" stroke="#0a0a0a" stroke-width="0.5"/>
+
+  <!-- Center circle ornament ring -->
+  <circle cx="400" cy="400" r="35" fill="#ffffff" stroke="#0a0a0a" stroke-width="2"/>
+  <!-- Dot ring around center -->
+  <circle cx="400" cy="360" r="3" fill="#0a0a0a"/>
+  <circle cx="400" cy="440" r="3" fill="#0a0a0a"/>
+  <circle cx="360" cy="400" r="3" fill="#0a0a0a"/>
+  <circle cx="440" cy="400" r="3" fill="#0a0a0a"/>
+  <circle cx="372" cy="372" r="2.5" fill="#0a0a0a"/>
+  <circle cx="428" cy="372" r="2.5" fill="#0a0a0a"/>
+  <circle cx="372" cy="428" r="2.5" fill="#0a0a0a"/>
+  <circle cx="428" cy="428" r="2.5" fill="#0a0a0a"/>
+  <circle cx="386" cy="362" r="2" fill="#0a0a0a"/>
+  <circle cx="414" cy="362" r="2" fill="#0a0a0a"/>
+  <circle cx="386" cy="438" r="2" fill="#0a0a0a"/>
+  <circle cx="414" cy="438" r="2" fill="#0a0a0a"/>
+  <circle cx="362" cy="386" r="2" fill="#0a0a0a"/>
+  <circle cx="362" cy="414" r="2" fill="#0a0a0a"/>
+  <circle cx="438" cy="386" r="2" fill="#0a0a0a"/>
+  <circle cx="438" cy="414" r="2" fill="#0a0a0a"/>
+
+  <!-- Red center dot -->
+  <circle cx="400" cy="400" r="18" fill="#c41e1e"/>
+  <circle cx="400" cy="400" r="18" fill="none" stroke="#ffffff" stroke-width="2"/>
+</svg>
