@@ -1,0 +1,12 @@
+[package]
+name = "lumen-data"
+version = "0.0.1"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Reactive data layer with SQLite persistence for Lumen"
+
+[dependencies]
+lumen-core.workspace = true
+lumen-data-derive.workspace = true
+rusqlite = { version = "0.32", features = ["bundled"] }

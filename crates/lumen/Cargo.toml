@@ -12,6 +12,7 @@ lumen-layout.workspace = true
 lumen-primitives.workspace = true
 lumen-render.workspace = true
 lumen-text.workspace = true
+lumen-data.workspace = true
 lumen-theme.workspace = true
 lumen-widgets.workspace = true
 lumen-platform.workspace = true

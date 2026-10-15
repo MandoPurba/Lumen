@@ -9,12 +9,15 @@ members = [
     "crates/lumen-text",
     "crates/lumen-theme",
     "crates/lumen-widgets",
+    "crates/lumen-data",
+    "crates/lumen-data-derive",
     "crates/lumen-platform",
     "examples/shapes",
     "examples/text",
     "examples/counter",
     "examples/todo",
     "examples/gallery",
+    "examples/todo-db",
 ]
 
 [workspace.package]
@@ -29,6 +32,8 @@ lumen-layout = { path = "crates/lumen-layout" }
 lumen-primitives = { path = "crates/lumen-primitives" }
 lumen-render = { path = "crates/lumen-render" }
 lumen-text = { path = "crates/lumen-text" }
+lumen-data = { path = "crates/lumen-data" }
+lumen-data-derive = { path = "crates/lumen-data-derive" }
 lumen-theme = { path = "crates/lumen-theme" }
 lumen-widgets = { path = "crates/lumen-widgets" }
 lumen-platform = { path = "crates/lumen-platform" }
