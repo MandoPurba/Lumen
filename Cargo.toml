@@ -28,7 +28,7 @@ repository = "https://github.com/MandoPurba/Lumen"
 rust-version = "1.97"
 
 [workspace.dependencies]
-lumen-core = { path = "crates/lumen-core", version = "0.1.0" }
+lumen-core = { path = "crates/lumen-core", version = "0.2.0" }
 lumen-layout = { path = "crates/lumen-layout", version = "0.1.0" }
 lumen-primitives = { path = "crates/lumen-primitives", version = "0.1.0" }
 lumen-render = { path = "crates/lumen-render", version = "0.1.0" }
