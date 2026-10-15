@@ -5,7 +5,7 @@ use std::time::Instant;
 use lumen_core::a11y::{A11yRole, A11yTree};
 use lumen_core::animation;
 use lumen_core::{Color, Event, Key, Modifiers};
-use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextGlyph};
+use lumen_render::{DrawCommand, GlyphUpload, Renderer, TextBatch, TextDraw, TextGlyph};
 use lumen_text::{TextBuffer, TextSystem};
 use winit::application::ApplicationHandler;
 use winit::event::WindowEvent;
@@ -89,6 +89,20 @@ impl TextContext {
 impl Default for TextContext {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl TextDraw for TextContext {
+    fn draw_label(
+        &mut self,
+        text: &str,
+        font_size: f32,
+        x: f32,
+        y: f32,
+        color: Color,
+    ) -> DrawCommand {
+        let buf = self.create_buffer(text, font_size, font_size * 1.2, None);
+        self.draw_text(&buf, x, y, color)
     }
 }
 
