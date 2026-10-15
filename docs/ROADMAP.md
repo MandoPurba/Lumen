@@ -51,7 +51,7 @@ Each milestone has exit criteria. Don't start next until met.
 - Android, then iOS. Touch, gestures, safe areas, soft keyboard, lifecycle.
 - **Exit:** todo app on device, both OSes.
 
-## M11 — v0.1 public release
+## M11 — v0.1 public release ✓
 - Docs site, 3 example apps, crates.io publish (`release-plz`).
 
 ## Later

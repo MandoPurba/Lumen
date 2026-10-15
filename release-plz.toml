@@ -1,0 +1,7 @@
+[workspace]
+allow_dirty = false
+git_release_enable = true
+git_tag_enable = true
+
+# Publish crates in dependency order (release-plz handles this automatically).
+# Examples are excluded via publish = false in their Cargo.toml.

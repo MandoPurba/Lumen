@@ -28,16 +28,16 @@ repository = "https://github.com/nicepkg/lumen"
 rust-version = "1.97"
 
 [workspace.dependencies]
-lumen-core = { path = "crates/lumen-core" }
-lumen-layout = { path = "crates/lumen-layout" }
-lumen-primitives = { path = "crates/lumen-primitives" }
-lumen-render = { path = "crates/lumen-render" }
-lumen-text = { path = "crates/lumen-text" }
-lumen-data = { path = "crates/lumen-data" }
-lumen-data-derive = { path = "crates/lumen-data-derive" }
-lumen-theme = { path = "crates/lumen-theme" }
-lumen-widgets = { path = "crates/lumen-widgets" }
-lumen-platform = { path = "crates/lumen-platform" }
+lumen-core = { path = "crates/lumen-core", version = "0.1.0" }
+lumen-layout = { path = "crates/lumen-layout", version = "0.1.0" }
+lumen-primitives = { path = "crates/lumen-primitives", version = "0.1.0" }
+lumen-render = { path = "crates/lumen-render", version = "0.1.0" }
+lumen-text = { path = "crates/lumen-text", version = "0.1.0" }
+lumen-data = { path = "crates/lumen-data", version = "0.1.0" }
+lumen-data-derive = { path = "crates/lumen-data-derive", version = "0.1.0" }
+lumen-theme = { path = "crates/lumen-theme", version = "0.1.0" }
+lumen-widgets = { path = "crates/lumen-widgets", version = "0.1.0" }
+lumen-platform = { path = "crates/lumen-platform", version = "0.1.0" }
 cosmic-text = "0.12"
 slotmap = "1"
 wgpu = "24"
